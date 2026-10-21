@@ -1,10 +1,10 @@
-# Induction heads: recurring pairs and passive circuit tracing
+# Induction heads: recurring pairs and paper-style circuit tests
 
 A small, CPU-based seminar experiment inspired by [Elhage et al. (2021), *A Mathematical Framework for Transformer Circuits*](https://transformer-circuits.pub/2021/framework/index.html).
 
-The experiment uses a pretrained, two-layer attention-only transformer to predict recurring token pairs inside random background. It measures attention, runs input controls and head ablations, and traces additive contributions through keys and values in the **unmodified** forward pass. There is no training or fine-tuning.
+The experiment uses a pretrained, two-layer attention-only transformer to predict recurring token pairs inside random background. Its mechanistic analysis follows the two weight-based tests in the paper's **Checking the Mechanistic Theory** section: an OV copying map and a same-token QK matching map composed through an early head. There is no training or fine-tuning.
 
-This is a reproduction of a mechanism in a different public model, not a reproduction of Anthropic's original model weights or the entire paper.
+The input task is our recurring-pair variant; the paper also illustrates a complete random sequence repeated three times. The mechanistic tests follow the paper, in a different public model. This does not reproduce Anthropic's original weights or the entire paper.
 
 ## 1. What is the task?
 
@@ -59,16 +59,16 @@ python experiments/induction_pairs.py
 
 The download step requires internet access. The experiment itself loads local cached files and runs on CPU using two threads. The first download includes a pretrained model; tests do not need to download it.
 
-The default output directory is `work/induction/pairs-01`. Existing output directories are deliberately not overwritten. For another run:
+The default output directory is `work/induction/paper-01`. Existing output directories are deliberately not overwritten. For another run:
 
 ```bash
 python experiments/induction_pairs.py --output work/induction/run-02
 ```
 
-To run passive tracing and input controls without head ablations:
+To run the weight-based circuit tests and input controls without head ablations:
 
 ```bash
-python experiments/induction_pairs.py --skip-ablations --output work/induction/passive-only
+python experiments/induction_pairs.py --skip-ablations --output work/induction/circuits-only
 ```
 
 Other options include `--batch`, `--pairs`, `--repeats`, `--min-gap`, `--max-gap`, `--seed` and `--threads`. Defaults and meanings are in `Settings` in the entry script. `INDUCTION_HF_HOME` can point to an existing compatible Hugging Face cache; otherwise files are cached under `work/hf-cache`.
@@ -82,24 +82,15 @@ Start with `main()` and then `run_experiment()` in the entry script.
 | [`experiments/induction_pairs.py`](experiments/induction_pairs.py) | Read settings, coordinate the experiment, save results and English example tables. |
 | [`experiments/pair_data.py`](experiments/pair_data.py) | Generate inputs, record true source positions, construct input controls and a fixed-offset baseline. |
 | [`experiments/pair_measurements.py`](experiments/pair_measurements.py) | Measure next-token prediction and attention, select candidate heads on discovery data, and ablate individual heads. |
-| [`experiments/pair_trace.py`](experiments/pair_trace.py) | Decompose the observed QK scores and direct output logits without changing activations. |
+| [`experiments/paper_circuits.py`](experiments/paper_circuits.py) | The main mechanistic analysis: OV copying, composed-QK matching, eigenvalue scores and the two-axis plot. |
 | [`experiments/pair_model.py`](experiments/pair_model.py) | Load cached weights and tokenizer, check architecture assumptions, and capture activations. |
 | [`experiments/pair_config.py`](experiments/pair_config.py) | Keep paths and pinned repository revisions in one place. |
 | [`experiments/download_model.py`](experiments/download_model.py) | Explicitly download only the required pretrained files. |
 | [`experiments/test_pair_induction.py`](experiments/test_pair_induction.py) | Test input construction, controls, attention indexing and passive decompositions. |
+| [`experiments/test_paper_circuits.py`](experiments/test_paper_circuits.py) | Check low-rank eigenvalues and the direction of the token-to-token maps. |
+| [`experiments/pair_trace.py`](experiments/pair_trace.py) | Archived detailed activation decomposition; no longer called by the main experiment. |
 
-### Reading the key trace
-
-`trace_key_composition()` coordinates these separate steps in `pair_trace.py`:
-
-1. `edge_positions()` collects the query/source indices.
-2. `decompose_qk()` reads cached Q/K, reconstructs their components and checks the full score decomposition.
-3. `score_key_components()` measures each key component against the actual query.
-4. `trace_previous_token()` follows the specific path: previous token -> early-head write -> later key -> matching score. `previous_token_writes()` separates token content from value bias.
-5. `add_edge_measurements()` attaches individual measurements to the recorded edges.
-6. `summarize_key_trace()` compares matching sources with other-pair sources and builds the report.
-
-The basic operation is `matching_score(query, key, scale)`: a scaled dot product. Report formatting is separate from the model arithmetic. The refactored trace was compared against every value in the published reference key trace, including all 1,728 edge records, with exact equality.
+Start the mechanistic analysis with `ov_factors()` and `matching_factors()` in `paper_circuits.py`. Each forms one token map in a few matrix multiplications. `eigenvalue_summary()` computes the paper's summary score. `analyze_circuits()` applies the same two tests to every second-layer head.
 
 ## 5. Measurements and controls
 
@@ -113,23 +104,35 @@ Controls:
 2. **No pair history:** replace earlier A tokens with reserved tokens, retaining B identities, B positions and the final-round queries.
 3. **Rotated values:** cyclically change which B belongs to each A, keeping triggers, background and positions. Score against both the new and old answers.
 4. **Fixed offset:** select one best distance on discovery data and measure its source-location accuracy on evaluation data.
-5. **Head ablations:** zero each of the 16 head outputs separately and measure the change in prediction loss. This is separate from passive tracing.
+5. **Head ablations:** zero each of the 16 head outputs separately and measure the change in prediction loss. This is separate from the paper-style weight tests.
 
-## 6. What does passive tracing mean?
+## 6. The two mechanistic tests
 
-The clean forward pass is captured once. For this model, the first layer's residual stream is exactly the token embedding plus the sum of head writes and the output bias. Shortformer adds position embeddings to Q and K inputs, but not to V inputs.
+The code uses TransformerLens's row-vector convention. Let `E = W_E`, `U = W_U`, `p` be the earlier previous-token head, and `h` a later head.
 
-The code reconstructs:
+**Copying through OV:** form the token-to-logit map
 
-- Q and K from all earlier head outputs, token embeddings, position embeddings and biases;
-- every Q-component × K-component term in the attention score;
-- the earlier head's contribution to a later key, evaluated against the actual query;
-- the specific previous-token-to-current-position edge, with its token-content and bias terms distinguished;
-- direct target logits and target-versus-other-pair-value margins from every residual component;
-- the later head's writes from matching B sources versus other sources;
-- within matching sources, the contribution of B embeddings, earlier head outputs and value-projection bias.
+```text
+M_OV = (E @ W_V[h]) @ (W_O[h] @ U)
+```
 
-Each decomposition is checked numerically against the actual model calculation. These are additive decompositions of **pre-softmax attention scores and raw output logits**, not additive decompositions of attention probabilities or causal effects.
+Its rows describe which token is read; its columns describe which output logits it supports.
+
+**Same-token matching through K-composition:** form
+
+```text
+Q = E @ W_Q[h]
+K = E @ W_V[p] @ W_O[p] @ W_K[h]
+M_QK = Q @ K.T / attention_scale
+```
+
+Here the row is the current token; the column is the earlier token whose information the previous-token head moves into the following position. Matching the same token supports the induction pattern `A B ... A -> B`.
+
+For both maps, following the paper's figure, the summary is `real(sum(eigenvalues)) / sum(abs(eigenvalues))`. Values near +1 indicate a spectrum strongly biased toward positive real eigenvalues. This is **not** the fraction of positive eigenvalues, a probability, or prediction accuracy. As the authors emphasize, positive eigenvalues support the interpretation but are not sufficient proof of copying.
+
+The vocabulary-wide maps would have over 2.5 billion entries. We do not construct them: if a map is `L @ R`, its nonzero eigenvalues equal those of the small matrix `R @ L`. The code therefore diagonalizes a 64-by-64 matrix. This identity is valid for eigenvalues, not for singular values or Frobenius norms.
+
+These are weight-only token maps, omitting biases and positional components as in the paper's simplified analysis. They test particular OV and K-composition terms, not the complete context-dependent attention calculation. No detailed per-activation reconstruction is needed in the main run.
 
 ## 7. Tests and recorded results
 
@@ -137,9 +140,9 @@ Each decomposition is checked numerically against the actual model calculation. 
 python -m pytest -q
 ```
 
-The tests include a randomly initialized, tiny Shortformer with nonzero biases. This checks that the algebra does not merely work because a bias happens to be zero. No pretrained weights or network access are needed for the tests.
+Ten tests cover the data/controls, the small-vs-full eigenvalue identity (including complex eigenvalues), token-map orientation, and the retained legacy decomposition. No pretrained weights or network access are needed for these tests.
 
-The full reference run, including exact inputs, is in [`results/reference`](results/reference). See [`RESULTS.md`](RESULTS.md) for the main numbers and their limits.
+The current reference run, including exact inputs, is in [`results/paper-reference`](results/paper-reference). See [`RESULTS.md`](RESULTS.md). The earlier detailed analysis remains under `results/reference` for historical comparison; it uses the same inputs and is not an independent data seed.
 
 The primary result is **28/128 correct next-token predictions (21.875%)**, compared with 0/128 after removing pair history. This is evidence of context-dependent prediction, not a complete solution of the task. Attention-location accuracy is a different metric and must not be presented as prediction accuracy. This is one data seed, and four queries from one sequence are not independent observations.
 
@@ -151,7 +154,8 @@ The primary result is **28/128 correct next-token predictions (21.875%)**, compa
 | `inputs.json` | Exact discovery/evaluation token IDs, pair maps and occurrence positions. |
 | `examples.md` | English tables showing inputs, pair positions and predictions. |
 | `baseline.json` | Candidate selection, clean-run prediction and attention metrics. |
-| `passive_trace.json` | Full additive decompositions, per-edge records and reconstruction checks. |
+| `mechanistic_analysis.json` | Weight-only OV and K-composed QK eigenvalue scores for all eight late heads. |
+| `mechanistic_analysis.png` | Paper-style plot: OV positivity against QK positivity, highlighting the attention-selected candidate. |
 | `results.json` | Clean metrics, input controls and optional ablations. |
 
 ## References

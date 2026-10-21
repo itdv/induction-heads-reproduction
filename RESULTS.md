@@ -1,74 +1,67 @@
-# Reference experiment
+# Results: paper-style mechanistic tests
 
-Recorded on 2026-10-22 using the pinned pretrained model, without training. This run repeats the same inputs as the local development experiment; it is not an independent seed.
+Recorded on 2026-10-22. No training or weight updates. The recurring-pair inputs and seeds are unchanged from the earlier reference; this is not an independent replication.
 
-## Protocol
+## Behavioral check
 
-- Discovery seed: 20261021; evaluation seed: 20261022.
-- 32 sequences in each set, four pairs per sequence, four occurrences per pair.
-- Freshly shuffled pair order in each round; 1–9 background tokens before each pair.
-- Four final-occurrence queries per evaluation sequence: 128 queries in total.
-- Candidate heads selected on discovery data: previous-token head L0H3; later matching head L1H5. Head indices start at zero.
+Discovery/evaluation use 32 different sequences each. Every sequence has four distinct pairs and four occurrences per pair. The 128 evaluation questions are the last occurrence of every pair. Background gaps vary from 1 to 9 tokens.
 
-## Prediction
-
-Top-1 predictions are selected from the full vocabulary, without a restricted answer list.
-
-| Condition | Mean cross-entropy (nats) | Correct top-1 predictions |
+| Condition | Mean loss (natural logarithm) | Top-1 accuracy over the full vocabulary |
 |---|---:|---:|
-| First occurrence of each pair | 14.861 | 0/128 |
-| Fourth occurrence, consistent pair history | 6.142 | 28/128 (21.875%) |
-| Earlier triggers replaced; B identities and positions preserved | 13.875 | 0/128 |
-| B identities rotated; scored against the new answers | 6.252 | 24/128 (18.75%) |
-| Same rotated inputs; scored against the old answers | 13.980 | 0/128 |
+| First occurrence | 14.861 | 0.000% |
+| Fourth occurrence | 6.142 | 21.875% |
+| No pair history | 13.875 | 0.000% |
+| Rotated values, new answers | 6.252 | 18.750% |
+| Rotated values, old answers | 13.980 | 0.000% |
 
-The model uses contextual associations, but it does **not** solve the full task reliably.
+Heads selected on separate discovery data: L0H3 (previous token) and L1H5 (matching-source attention). On evaluation data L1H5 has matching attention mass 0.5886 and a matching-source attention argmax in 75/128 queries. These attention numbers are not next-token accuracy. The task is only partially solved.
 
-## Attention
+## The mechanistic test follows the paper
 
-L1H5 assigned mean attention mass 0.5886 to the three earlier matching B positions. The uniform-attention reference mass was 0.0296. Its attention argmax selected a matching source in 75/128 queries (58.594%). A fixed lag selected on discovery data found a matching source in 7/128 queries (5.469%). Attention-location accuracy is not prediction accuracy.
+Following **Checking the Mechanistic Theory** in [Elhage et al. (2021)](https://transformer-circuits.pub/2021/framework/index.html), we examine two weight-only token maps for every late-layer head: OV copying, and same-token QK matching through the earlier previous-token head. The pair inputs are our variant; the paper also illustrates a full random sequence repeated three times.
 
-## Passive key tracing
+With TransformerLens row-vector weights and early head p / late head h:
 
-These terms are computed from the unmodified run. Matching sources are compared with earlier B sources belonging to other pairs.
+```text
+M_OV = E @ W_V[h] @ W_O[h] @ U
+Q = E @ W_Q[h]
+K = E @ W_V[p] @ W_O[p] @ W_K[h]
+M_QK = Q @ K.T / attention_scale
+```
 
-| Pre-softmax score term | Matching sources | Other-pair sources | Difference |
-|---|---:|---:|---:|
-| Full QK score of L1H5 | 13.226 | 5.862 | 7.364 |
-| L0H3 contribution to K, dotted with the actual full Q | 7.319 | -0.017 | 7.335 |
-| Previous-token embedding through L0H3 to K, excluding V bias | 7.304 | -0.048 | 7.352 |
+For each map we compute `real(sum(eigenvalues)) / sum(abs(eigenvalues))`, the summary shown in the paper. The nonzero eigenvalues are computed using a 64-by-64 matrix rather than constructing a vocabulary-sized map. The score is not the fraction of positive eigenvalues and is not prediction accuracy.
 
-The full Q-component by K-component matrix, including position and bias terms, is also saved. Reconstructed scores match the scores captured from the model to numerical precision.
+| Late head | OV positivity: copying | K-composed QK positivity: same matching |
+|---|---:|---:|
+| L1H0 | -0.3395 | 0.0985 |
+| L1H1 | 0.9857 | 0.9764 |
+| L1H2 | 0.9937 | 0.9088 |
+| L1H3 | 0.9596 | 0.6525 |
+| L1H4 | 0.0682 | -0.0115 |
+| L1H5 | 0.9989 | 0.9971 |
+| L1H6 | 0.3117 | -0.2437 |
+| L1H7 | 0.4650 | 0.3236 |
 
-## Passive output tracing
+![OV and QK eigenvalue positivity](results/paper-reference/mechanistic_analysis.png)
 
-The reported margin is the raw logit of the correct B minus the average logit of the three other paired B values. It is a descriptive margin, not candidate-restricted prediction accuracy.
-
-| Component | Mean direct margin contribution |
-|---|---:|
-| Actual final output margin | 7.381 |
-| Entire L1H5 output | 7.287 |
-| Within L1H5: matching B sources | 7.355 |
-| Within L1H5: all other sources | -0.069 |
-| Within matching sources: token embeddings through the value path | 4.478 |
-| Within matching sources: L0H2 output through the value path | 2.860 |
-
-These components are nested: the last two rows are parts of the matching-source row and must not be added to it again. Other head outputs and biases complete the exact decomposition. The results support distinct contributions through keys and values; they do not establish that only two heads implement the task.
+The attention-selected L1H5 has the highest score on both axes: approximately 0.9989 for OV and 0.9971 for composed QK. This supports the proposed copying and matching mechanism. Other heads, especially L1H1 and L1H2, also have high spectral scores; the weight tests do not uniquely identify the active head or prove its actual behavior on every input.
 
 ## Separate ablations
 
-All 16 heads were ablated individually. Mean loss increased by 7.177 for L1H5, 7.039 for L0H3, and 5.641 for L0H2. Top-1 accuracy fell to zero after either L1H5 or L0H3 was ablated. All head results are retained, not only these examples.
+The previous behavioral ablation sweep is retained as a separate check. Loss increases were 7.177 for L1H5, 7.039 for L0H3 and 5.641 for L0H2. These causal interventions are not the spectral metric and do not reproduce the paper's separate higher-order-term ablation procedure.
 
-## Verification and limits
+## Scope and verification
 
-Six tests passed, including reconstruction on a small Shortformer with nonzero biases. Q/K components, attention scores, head value mixtures, final residuals and output margins were reconstructed within approximately 1e-5 or less on the pretrained model. Removing ablation hooks restored the original recorded predictions and losses.
+The main mechanistic analysis is now just the two tests in `experiments/paper_circuits.py`. It does not reconstruct every activation contribution. Biases and positional components are excluded from these particular weight maps, following the paper's simplified analysis. Other Q-, K- and V-composition paths can still matter in the complete model.
 
-The additive decompositions describe raw attention scores and output logits. They are not additive decompositions of softmax probabilities and are not causal effects. This is one data seed in one model, on a controlled synthetic task. Four queries sharing a sequence are not fully independent observations. There is no claim of general natural-language understanding, a minimum sufficient circuit, or a new discovery relative to the original paper.
+Ten tests passed. They check the low-rank eigenvalue identity, including complex eigenvalues, the meaning of each token-map axis, data generation and the retained legacy analysis. Behavioral results, attention measurements, input controls and all 16 ablations exactly match the prior reference.
 
-## Inspect the complete records
+This is one model and one data seed, without a significance test. Positive spectral bias is supporting evidence, not a sufficient proof of copying or a complete circuit. The earlier detailed-activation results remain in `results/reference`; they are not the current main analysis.
 
-- [Exact inputs and pair-event metadata](results/reference/inputs.json).
-- [English input and prediction tables](results/reference/examples.md).
-- [Full passive trace and per-edge records](results/reference/passive_trace.json).
-- [Prediction metrics, input controls and all ablations](results/reference/results.json).
-- [Protocol](results/reference/protocol.json).
+## Complete records
+
+- [Exact inputs](results/paper-reference/inputs.json).
+- [English examples and predictions](results/paper-reference/examples.md).
+- [Mechanistic scores and eigenvalues](results/paper-reference/mechanistic_analysis.json).
+- [Behavior, controls and ablations](results/paper-reference/results.json).
+- [Protocol](results/paper-reference/protocol.json).

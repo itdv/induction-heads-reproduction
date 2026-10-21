@@ -1,0 +1,16 @@
+{
+  "model": "NeelNanda/Attn-Only-2L512W-Shortformer-6B-big-lr",
+  "revision": "438f8e124b85bde1b6e64c63e9445e31b45f5be6",
+  "batch": 32,
+  "pairs": 4,
+  "repeats": 4,
+  "min_gap": 1,
+  "max_gap": 9,
+  "seed": 20261021,
+  "threads": 2,
+  "ablations": true,
+  "output": "work/induction/paper-01",
+  "trained": false,
+  "mechanistic_analysis": "weight-only OV and K-composed QK eigenvalue positivity, following Elhage (2021)",
+  "selection": "separate discovery data; early previous head, late matching head"
+}

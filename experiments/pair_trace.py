@@ -1,5 +1,8 @@
 """Exact additive decompositions of the UNMODIFIED run (no hooks changing activations).
 
+Legacy detailed analysis, retained for the previous reference results. The current
+experiment uses the simpler weight-only tests in paper_circuits.py instead.
+
 QK terms are contributions to pre-softmax scores, not additive attention probabilities.
 Logit terms are direct contributions, not causal effects or probabilities.
 The algebra is restricted to the architecture checked in pair_model.validate_model.

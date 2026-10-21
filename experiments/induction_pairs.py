@@ -1,4 +1,4 @@
-r"""Readable induction experiment: recurring pairs, passive tracing, optional ablations.
+r"""Recurring-pair induction with the paper's simple weight-based circuit tests.
 
 Run: .venv\Scripts\python.exe experiments/induction_pairs.py
 """
@@ -10,7 +10,7 @@ from pair_model import ROOT, MODEL, REVISION, load_model, clean_run
 from pair_data import make_pair_batch, remove_pair_history, rotate_pair_values
 from pair_data import best_fixed_offset, fixed_offset_accuracy
 from pair_measurements import prediction_metrics, attention_metrics, select_heads, ablation_sweep
-from pair_trace import trace_key_composition, trace_output
+from paper_circuits import analyze_circuits, save_circuit_plot
 import torch
 
 
@@ -24,7 +24,7 @@ class Settings:
     seed: int = 20261021
     threads: int = 2
     ablations: bool = True
-    output: str = 'work/induction/pairs-01'
+    output: str = 'work/induction/paper-01'
 
 
 def parse_settings():
@@ -101,10 +101,10 @@ def run_experiment(model, settings, out):
               'positional_baseline':{'lag_selected_on_discovery':lag,
                                      'evaluation_hit_rate':fixed_offset_accuracy(data, lag)}}
     save(out / 'baseline.json', report)
-    key_trace = trace_key_composition(model, cache, data, selected['previous'], selected['induction'])
-    output_trace = trace_output(model, cache, residual, data, selected['induction'])
-    save(out / 'passive_trace.json', {'key_composition':key_trace, 'output':output_trace})
     del cache, residual
+    circuits = analyze_circuits(model, selected['previous'])
+    save(out / 'mechanistic_analysis.json', circuits)
+    save_circuit_plot(circuits, selected['induction'], out / 'mechanistic_analysis.png')
     report['controls'] = evaluate_controls(model, data)
     if settings.ablations:
         report['ablations'] = ablation_sweep(model, data, baseline)
@@ -124,7 +124,7 @@ def main():
     out.mkdir(parents=True, exist_ok=False)
     torch.set_num_threads(settings.threads)
     save(out / 'protocol.json', {'model':MODEL, 'revision':REVISION, **asdict(settings),
-         'trained':False, 'passive_trace':'actual clean run; additive QK scores and direct logits',
+         'trained':False, 'mechanistic_analysis':'weight-only OV and K-composed QK eigenvalue positivity, following Elhage (2021)',
          'selection':'separate discovery data; early previous head, late matching head'})
     model = load_model()
     run_experiment(model, settings, out)
