@@ -1,0 +1,16 @@
+{
+  "model": "NeelNanda/Attn-Only-2L512W-Shortformer-6B-big-lr",
+  "revision": "438f8e124b85bde1b6e64c63e9445e31b45f5be6",
+  "batch": 32,
+  "pairs": 4,
+  "repeats": 4,
+  "min_gap": 1,
+  "max_gap": 9,
+  "seed": 20261021,
+  "threads": 2,
+  "ablations": true,
+  "output": "results/reference",
+  "trained": false,
+  "passive_trace": "actual clean run; additive QK scores and direct logits",
+  "selection": "separate discovery data; early previous head, late matching head"
+}

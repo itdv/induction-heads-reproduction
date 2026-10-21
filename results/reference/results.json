@@ -1,0 +1,5424 @@
+{
+  "selected": {
+    "previous": 3,
+    "induction": 5,
+    "selection_rule": "argmax on discovery only; candidates, not a success declaration"
+  },
+  "discovery_attention": [
+    {
+      "matching_mass": [
+        0.008861636742949486,
+        0.0003455342084635049,
+        0.0001321701129199937,
+        0.0002587958297226578,
+        0.0075176372192800045,
+        0.007467601448297501,
+        0.020049721002578735,
+        0.011738831177353859
+      ],
+      "attention_argmax_matches": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.015625
+      ],
+      "uniform_matching_mass": 0.02974175708771461,
+      "previous_token_mass": [
+        0.06546138226985931,
+        0.029007039964199066,
+        0.046458885073661804,
+        0.9345401525497437,
+        0.011905288323760033,
+        0.249136820435524,
+        0.027755126357078552,
+        0.08529675006866455
+      ]
+    },
+    {
+      "matching_mass": [
+        0.003003380261361599,
+        0.09088946133852005,
+        0.03995604068040848,
+        0.017318962141871452,
+        0.002121974714100361,
+        0.5995339155197144,
+        0.0024161399342119694,
+        0.004332618787884712
+      ],
+      "attention_argmax_matches": [
+        0.0,
+        0.0625,
+        0.0,
+        0.0,
+        0.0,
+        0.5234375,
+        0.0,
+        0.0
+      ],
+      "uniform_matching_mass": 0.02974175708771461,
+      "previous_token_mass": [
+        0.02235381491482258,
+        0.04268701747059822,
+        0.0313241183757782,
+        0.03768715262413025,
+        0.123380146920681,
+        0.012425274588167667,
+        0.02461175248026848,
+        0.034862566739320755
+      ]
+    }
+  ],
+  "attention": [
+    {
+      "matching_mass": [
+        0.007392599247395992,
+        0.00038138870149850845,
+        0.00014758297766093165,
+        0.00013887874956708401,
+        0.006962085608392954,
+        0.002788370009511709,
+        0.01843155361711979,
+        0.008701317943632603
+      ],
+      "attention_argmax_matches": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "uniform_matching_mass": 0.029587471216379065,
+      "previous_token_mass": [
+        0.06637420505285263,
+        0.029455456882715225,
+        0.048008136451244354,
+        0.933152437210083,
+        0.011825802735984325,
+        0.24780060350894928,
+        0.027175161987543106,
+        0.08580980449914932
+      ]
+    },
+    {
+      "matching_mass": [
+        0.0031007020734250546,
+        0.07719485461711884,
+        0.03821684420108795,
+        0.017224814742803574,
+        0.0019289135234430432,
+        0.5885510444641113,
+        0.002746759681031108,
+        0.00595681369304657
+      ],
+      "attention_argmax_matches": [
+        0.0,
+        0.0390625,
+        0.0078125,
+        0.0,
+        0.0,
+        0.5859375,
+        0.0,
+        0.0
+      ],
+      "uniform_matching_mass": 0.029587471216379065,
+      "previous_token_mass": [
+        0.022212006151676178,
+        0.0421597883105278,
+        0.03129282966256142,
+        0.0373280830681324,
+        0.12064211070537567,
+        0.012704364024102688,
+        0.024023499339818954,
+        0.0341014564037323
+      ]
+    }
+  ],
+  "final_occurrence": {
+    "n": 128,
+    "loss": 6.141543388366699,
+    "top1": 0.21875,
+    "target_vs_other_values_margin": 7.380640029907227,
+    "rows": [
+      {
+        "row": 0,
+        "pair": 2,
+        "query": 96,
+        "target": 15833,
+        "prediction": 15833,
+        "loss": 2.0805160999298096
+      },
+      {
+        "row": 0,
+        "pair": 3,
+        "query": 101,
+        "target": 15103,
+        "prediction": 15103,
+        "loss": 0.6041305065155029
+      },
+      {
+        "row": 0,
+        "pair": 1,
+        "query": 111,
+        "target": 3180,
+        "prediction": 3180,
+        "loss": 0.18368998169898987
+      },
+      {
+        "row": 0,
+        "pair": 0,
+        "query": 121,
+        "target": 11309,
+        "prediction": 13,
+        "loss": 10.001688957214355
+      },
+      {
+        "row": 1,
+        "pair": 2,
+        "query": 93,
+        "target": 3698,
+        "prediction": 434,
+        "loss": 9.79725170135498
+      },
+      {
+        "row": 1,
+        "pair": 1,
+        "query": 101,
+        "target": 22073,
+        "prediction": 15,
+        "loss": 7.8366899490356445
+      },
+      {
+        "row": 1,
+        "pair": 3,
+        "query": 105,
+        "target": 20522,
+        "prediction": 13,
+        "loss": 5.874020576477051
+      },
+      {
+        "row": 1,
+        "pair": 0,
+        "query": 108,
+        "target": 26501,
+        "prediction": 15,
+        "loss": 4.935456275939941
+      },
+      {
+        "row": 2,
+        "pair": 2,
+        "query": 90,
+        "target": 7522,
+        "prediction": 15,
+        "loss": 3.7014105319976807
+      },
+      {
+        "row": 2,
+        "pair": 0,
+        "query": 100,
+        "target": 2325,
+        "prediction": 281,
+        "loss": 5.687015533447266
+      },
+      {
+        "row": 2,
+        "pair": 3,
+        "query": 106,
+        "target": 9497,
+        "prediction": 15,
+        "loss": 9.672619819641113
+      },
+      {
+        "row": 2,
+        "pair": 1,
+        "query": 111,
+        "target": 19559,
+        "prediction": 14,
+        "loss": 4.505497932434082
+      },
+      {
+        "row": 3,
+        "pair": 0,
+        "query": 94,
+        "target": 2153,
+        "prediction": 2153,
+        "loss": 1.941827416419983
+      },
+      {
+        "row": 3,
+        "pair": 1,
+        "query": 98,
+        "target": 10288,
+        "prediction": 15,
+        "loss": 15.200044631958008
+      },
+      {
+        "row": 3,
+        "pair": 3,
+        "query": 109,
+        "target": 26135,
+        "prediction": 26135,
+        "loss": 2.112203598022461
+      },
+      {
+        "row": 3,
+        "pair": 2,
+        "query": 115,
+        "target": 13998,
+        "prediction": 13998,
+        "loss": 1.883711576461792
+      },
+      {
+        "row": 4,
+        "pair": 3,
+        "query": 74,
+        "target": 11935,
+        "prediction": 15,
+        "loss": 7.873631477355957
+      },
+      {
+        "row": 4,
+        "pair": 1,
+        "query": 78,
+        "target": 26731,
+        "prediction": 187,
+        "loss": 15.157981872558594
+      },
+      {
+        "row": 4,
+        "pair": 0,
+        "query": 83,
+        "target": 9053,
+        "prediction": 9,
+        "loss": 9.720913887023926
+      },
+      {
+        "row": 4,
+        "pair": 2,
+        "query": 91,
+        "target": 49566,
+        "prediction": 13,
+        "loss": 7.328649520874023
+      },
+      {
+        "row": 5,
+        "pair": 3,
+        "query": 101,
+        "target": 38694,
+        "prediction": 14,
+        "loss": 11.506513595581055
+      },
+      {
+        "row": 5,
+        "pair": 0,
+        "query": 110,
+        "target": 31197,
+        "prediction": 15,
+        "loss": 9.055509567260742
+      },
+      {
+        "row": 5,
+        "pair": 1,
+        "query": 116,
+        "target": 15719,
+        "prediction": 15719,
+        "loss": 1.0406638383865356
+      },
+      {
+        "row": 5,
+        "pair": 2,
+        "query": 126,
+        "target": 15840,
+        "prediction": 15,
+        "loss": 8.615541458129883
+      },
+      {
+        "row": 6,
+        "pair": 3,
+        "query": 96,
+        "target": 43537,
+        "prediction": 43537,
+        "loss": 0.6857131123542786
+      },
+      {
+        "row": 6,
+        "pair": 0,
+        "query": 107,
+        "target": 178,
+        "prediction": 15,
+        "loss": 6.042898654937744
+      },
+      {
+        "row": 6,
+        "pair": 2,
+        "query": 112,
+        "target": 49562,
+        "prediction": 15,
+        "loss": 7.478390216827393
+      },
+      {
+        "row": 6,
+        "pair": 1,
+        "query": 122,
+        "target": 25006,
+        "prediction": 382,
+        "loss": 9.439656257629395
+      },
+      {
+        "row": 7,
+        "pair": 1,
+        "query": 79,
+        "target": 12873,
+        "prediction": 14,
+        "loss": 8.873313903808594
+      },
+      {
+        "row": 7,
+        "pair": 0,
+        "query": 87,
+        "target": 47225,
+        "prediction": 15,
+        "loss": 3.192268133163452
+      },
+      {
+        "row": 7,
+        "pair": 2,
+        "query": 96,
+        "target": 48195,
+        "prediction": 14,
+        "loss": 5.5513081550598145
+      },
+      {
+        "row": 7,
+        "pair": 3,
+        "query": 103,
+        "target": 22211,
+        "prediction": 434,
+        "loss": 3.44366717338562
+      },
+      {
+        "row": 8,
+        "pair": 1,
+        "query": 109,
+        "target": 35207,
+        "prediction": 15,
+        "loss": 5.816321849822998
+      },
+      {
+        "row": 8,
+        "pair": 3,
+        "query": 113,
+        "target": 27353,
+        "prediction": 15,
+        "loss": 5.334869861602783
+      },
+      {
+        "row": 8,
+        "pair": 0,
+        "query": 118,
+        "target": 11103,
+        "prediction": 15,
+        "loss": 9.38479232788086
+      },
+      {
+        "row": 8,
+        "pair": 2,
+        "query": 128,
+        "target": 24463,
+        "prediction": 15,
+        "loss": 9.471620559692383
+      },
+      {
+        "row": 9,
+        "pair": 2,
+        "query": 88,
+        "target": 36103,
+        "prediction": 15,
+        "loss": 12.192455291748047
+      },
+      {
+        "row": 9,
+        "pair": 3,
+        "query": 96,
+        "target": 5850,
+        "prediction": 15,
+        "loss": 11.060856819152832
+      },
+      {
+        "row": 9,
+        "pair": 1,
+        "query": 105,
+        "target": 10473,
+        "prediction": 15,
+        "loss": 11.432526588439941
+      },
+      {
+        "row": 9,
+        "pair": 0,
+        "query": 112,
+        "target": 21705,
+        "prediction": 15,
+        "loss": 10.037281036376953
+      },
+      {
+        "row": 10,
+        "pair": 3,
+        "query": 99,
+        "target": 16867,
+        "prediction": 15,
+        "loss": 3.084307909011841
+      },
+      {
+        "row": 10,
+        "pair": 0,
+        "query": 109,
+        "target": 32141,
+        "prediction": 15,
+        "loss": 9.34022331237793
+      },
+      {
+        "row": 10,
+        "pair": 1,
+        "query": 119,
+        "target": 9086,
+        "prediction": 15,
+        "loss": 3.9418888092041016
+      },
+      {
+        "row": 10,
+        "pair": 2,
+        "query": 130,
+        "target": 10493,
+        "prediction": 13,
+        "loss": 12.472521781921387
+      },
+      {
+        "row": 11,
+        "pair": 2,
+        "query": 84,
+        "target": 22521,
+        "prediction": 15,
+        "loss": 5.238263130187988
+      },
+      {
+        "row": 11,
+        "pair": 3,
+        "query": 95,
+        "target": 15343,
+        "prediction": 44,
+        "loss": 4.761233329772949
+      },
+      {
+        "row": 11,
+        "pair": 1,
+        "query": 104,
+        "target": 14263,
+        "prediction": 14263,
+        "loss": 1.828356385231018
+      },
+      {
+        "row": 11,
+        "pair": 0,
+        "query": 112,
+        "target": 34000,
+        "prediction": 14242,
+        "loss": 3.5302352905273438
+      },
+      {
+        "row": 12,
+        "pair": 3,
+        "query": 90,
+        "target": 29026,
+        "prediction": 187,
+        "loss": 8.207192420959473
+      },
+      {
+        "row": 12,
+        "pair": 0,
+        "query": 100,
+        "target": 44660,
+        "prediction": 262,
+        "loss": 8.945523262023926
+      },
+      {
+        "row": 12,
+        "pair": 2,
+        "query": 107,
+        "target": 22623,
+        "prediction": 15,
+        "loss": 12.912490844726562
+      },
+      {
+        "row": 12,
+        "pair": 1,
+        "query": 116,
+        "target": 11840,
+        "prediction": 15,
+        "loss": 4.765656471252441
+      },
+      {
+        "row": 13,
+        "pair": 0,
+        "query": 100,
+        "target": 11477,
+        "prediction": 15,
+        "loss": 4.224681854248047
+      },
+      {
+        "row": 13,
+        "pair": 2,
+        "query": 111,
+        "target": 37385,
+        "prediction": 3,
+        "loss": 7.704559326171875
+      },
+      {
+        "row": 13,
+        "pair": 1,
+        "query": 114,
+        "target": 1201,
+        "prediction": 14,
+        "loss": 3.1083600521087646
+      },
+      {
+        "row": 13,
+        "pair": 3,
+        "query": 124,
+        "target": 25550,
+        "prediction": 285,
+        "loss": 9.928499221801758
+      },
+      {
+        "row": 14,
+        "pair": 0,
+        "query": 91,
+        "target": 15262,
+        "prediction": 313,
+        "loss": 8.071805953979492
+      },
+      {
+        "row": 14,
+        "pair": 1,
+        "query": 94,
+        "target": 34601,
+        "prediction": 285,
+        "loss": 5.692699909210205
+      },
+      {
+        "row": 14,
+        "pair": 2,
+        "query": 98,
+        "target": 33866,
+        "prediction": 321,
+        "loss": 10.6060152053833
+      },
+      {
+        "row": 14,
+        "pair": 3,
+        "query": 104,
+        "target": 49984,
+        "prediction": 15,
+        "loss": 11.092401504516602
+      },
+      {
+        "row": 15,
+        "pair": 2,
+        "query": 112,
+        "target": 30213,
+        "prediction": 952,
+        "loss": 4.237884998321533
+      },
+      {
+        "row": 15,
+        "pair": 1,
+        "query": 123,
+        "target": 16083,
+        "prediction": 16083,
+        "loss": 1.241000771522522
+      },
+      {
+        "row": 15,
+        "pair": 0,
+        "query": 133,
+        "target": 36560,
+        "prediction": 124,
+        "loss": 15.755208015441895
+      },
+      {
+        "row": 15,
+        "pair": 3,
+        "query": 142,
+        "target": 38001,
+        "prediction": 253,
+        "loss": 8.639140129089355
+      },
+      {
+        "row": 16,
+        "pair": 1,
+        "query": 95,
+        "target": 13049,
+        "prediction": 13049,
+        "loss": 1.2054486274719238
+      },
+      {
+        "row": 16,
+        "pair": 3,
+        "query": 100,
+        "target": 42454,
+        "prediction": 387,
+        "loss": 8.688212394714355
+      },
+      {
+        "row": 16,
+        "pair": 0,
+        "query": 104,
+        "target": 30341,
+        "prediction": 14,
+        "loss": 7.976776123046875
+      },
+      {
+        "row": 16,
+        "pair": 2,
+        "query": 114,
+        "target": 23116,
+        "prediction": 72,
+        "loss": 10.771626472473145
+      },
+      {
+        "row": 17,
+        "pair": 1,
+        "query": 85,
+        "target": 13544,
+        "prediction": 13,
+        "loss": 5.955665111541748
+      },
+      {
+        "row": 17,
+        "pair": 2,
+        "query": 88,
+        "target": 8557,
+        "prediction": 247,
+        "loss": 4.6586222648620605
+      },
+      {
+        "row": 17,
+        "pair": 3,
+        "query": 95,
+        "target": 49640,
+        "prediction": 15,
+        "loss": 8.846043586730957
+      },
+      {
+        "row": 17,
+        "pair": 0,
+        "query": 100,
+        "target": 49846,
+        "prediction": 9,
+        "loss": 11.529263496398926
+      },
+      {
+        "row": 18,
+        "pair": 3,
+        "query": 82,
+        "target": 29156,
+        "prediction": 247,
+        "loss": 2.960216522216797
+      },
+      {
+        "row": 18,
+        "pair": 2,
+        "query": 87,
+        "target": 18325,
+        "prediction": 589,
+        "loss": 9.160778045654297
+      },
+      {
+        "row": 18,
+        "pair": 1,
+        "query": 90,
+        "target": 22904,
+        "prediction": 22904,
+        "loss": 1.4267419576644897
+      },
+      {
+        "row": 18,
+        "pair": 0,
+        "query": 95,
+        "target": 17107,
+        "prediction": 15,
+        "loss": 3.0419797897338867
+      },
+      {
+        "row": 19,
+        "pair": 0,
+        "query": 85,
+        "target": 3388,
+        "prediction": 15,
+        "loss": 4.793943881988525
+      },
+      {
+        "row": 19,
+        "pair": 1,
+        "query": 91,
+        "target": 27718,
+        "prediction": 14,
+        "loss": 11.207374572753906
+      },
+      {
+        "row": 19,
+        "pair": 2,
+        "query": 94,
+        "target": 37452,
+        "prediction": 1204,
+        "loss": 3.7181670665740967
+      },
+      {
+        "row": 19,
+        "pair": 3,
+        "query": 105,
+        "target": 7575,
+        "prediction": 15,
+        "loss": 3.447558879852295
+      },
+      {
+        "row": 20,
+        "pair": 1,
+        "query": 91,
+        "target": 18575,
+        "prediction": 15,
+        "loss": 7.48996639251709
+      },
+      {
+        "row": 20,
+        "pair": 0,
+        "query": 94,
+        "target": 24645,
+        "prediction": 79,
+        "loss": 2.7331409454345703
+      },
+      {
+        "row": 20,
+        "pair": 2,
+        "query": 105,
+        "target": 19071,
+        "prediction": 15,
+        "loss": 6.802314758300781
+      },
+      {
+        "row": 20,
+        "pair": 3,
+        "query": 114,
+        "target": 43807,
+        "prediction": 233,
+        "loss": 16.589351654052734
+      },
+      {
+        "row": 21,
+        "pair": 0,
+        "query": 82,
+        "target": 1301,
+        "prediction": 1301,
+        "loss": 3.128927230834961
+      },
+      {
+        "row": 21,
+        "pair": 3,
+        "query": 89,
+        "target": 5529,
+        "prediction": 5529,
+        "loss": 0.6047394275665283
+      },
+      {
+        "row": 21,
+        "pair": 2,
+        "query": 96,
+        "target": 28926,
+        "prediction": 15,
+        "loss": 4.564634323120117
+      },
+      {
+        "row": 21,
+        "pair": 1,
+        "query": 106,
+        "target": 40991,
+        "prediction": 40991,
+        "loss": 0.9137626886367798
+      },
+      {
+        "row": 22,
+        "pair": 0,
+        "query": 89,
+        "target": 36388,
+        "prediction": 313,
+        "loss": 7.820204257965088
+      },
+      {
+        "row": 22,
+        "pair": 2,
+        "query": 96,
+        "target": 8053,
+        "prediction": 14,
+        "loss": 6.5856122970581055
+      },
+      {
+        "row": 22,
+        "pair": 1,
+        "query": 102,
+        "target": 21941,
+        "prediction": 21941,
+        "loss": 2.4243757724761963
+      },
+      {
+        "row": 22,
+        "pair": 3,
+        "query": 111,
+        "target": 49530,
+        "prediction": 253,
+        "loss": 4.22714900970459
+      },
+      {
+        "row": 23,
+        "pair": 1,
+        "query": 90,
+        "target": 40585,
+        "prediction": 8075,
+        "loss": 22.247798919677734
+      },
+      {
+        "row": 23,
+        "pair": 2,
+        "query": 94,
+        "target": 28647,
+        "prediction": 28647,
+        "loss": 0.5151755213737488
+      },
+      {
+        "row": 23,
+        "pair": 0,
+        "query": 102,
+        "target": 17722,
+        "prediction": 17722,
+        "loss": 1.1540462970733643
+      },
+      {
+        "row": 23,
+        "pair": 3,
+        "query": 106,
+        "target": 1010,
+        "prediction": 15,
+        "loss": 3.2767715454101562
+      },
+      {
+        "row": 24,
+        "pair": 2,
+        "query": 102,
+        "target": 13329,
+        "prediction": 13,
+        "loss": 10.073562622070312
+      },
+      {
+        "row": 24,
+        "pair": 1,
+        "query": 112,
+        "target": 45900,
+        "prediction": 275,
+        "loss": 3.153048515319824
+      },
+      {
+        "row": 24,
+        "pair": 3,
+        "query": 120,
+        "target": 43456,
+        "prediction": 43456,
+        "loss": 1.372748851776123
+      },
+      {
+        "row": 24,
+        "pair": 0,
+        "query": 128,
+        "target": 19546,
+        "prediction": 13,
+        "loss": 3.84029483795166
+      },
+      {
+        "row": 25,
+        "pair": 3,
+        "query": 81,
+        "target": 37597,
+        "prediction": 37597,
+        "loss": 0.007307704538106918
+      },
+      {
+        "row": 25,
+        "pair": 1,
+        "query": 92,
+        "target": 5194,
+        "prediction": 15,
+        "loss": 7.4358906745910645
+      },
+      {
+        "row": 25,
+        "pair": 0,
+        "query": 98,
+        "target": 39798,
+        "prediction": 314,
+        "loss": 4.6183929443359375
+      },
+      {
+        "row": 25,
+        "pair": 2,
+        "query": 102,
+        "target": 30289,
+        "prediction": 30289,
+        "loss": 0.9995538592338562
+      },
+      {
+        "row": 26,
+        "pair": 3,
+        "query": 89,
+        "target": 20223,
+        "prediction": 13,
+        "loss": 9.680196762084961
+      },
+      {
+        "row": 26,
+        "pair": 2,
+        "query": 95,
+        "target": 5104,
+        "prediction": 5104,
+        "loss": 1.5547139644622803
+      },
+      {
+        "row": 26,
+        "pair": 0,
+        "query": 103,
+        "target": 31034,
+        "prediction": 31034,
+        "loss": 1.056925892829895
+      },
+      {
+        "row": 26,
+        "pair": 1,
+        "query": 114,
+        "target": 22200,
+        "prediction": 22200,
+        "loss": 0.6106433868408203
+      },
+      {
+        "row": 27,
+        "pair": 2,
+        "query": 81,
+        "target": 40411,
+        "prediction": 15,
+        "loss": 10.357831954956055
+      },
+      {
+        "row": 27,
+        "pair": 3,
+        "query": 85,
+        "target": 8085,
+        "prediction": 8085,
+        "loss": 0.2872152030467987
+      },
+      {
+        "row": 27,
+        "pair": 1,
+        "query": 88,
+        "target": 25184,
+        "prediction": 13,
+        "loss": 7.984854698181152
+      },
+      {
+        "row": 27,
+        "pair": 0,
+        "query": 91,
+        "target": 2388,
+        "prediction": 2388,
+        "loss": 0.10852121561765671
+      },
+      {
+        "row": 28,
+        "pair": 0,
+        "query": 93,
+        "target": 34538,
+        "prediction": 187,
+        "loss": 3.060870885848999
+      },
+      {
+        "row": 28,
+        "pair": 1,
+        "query": 96,
+        "target": 42477,
+        "prediction": 15,
+        "loss": 9.059833526611328
+      },
+      {
+        "row": 28,
+        "pair": 3,
+        "query": 103,
+        "target": 11530,
+        "prediction": 11530,
+        "loss": 1.8929964303970337
+      },
+      {
+        "row": 28,
+        "pair": 2,
+        "query": 112,
+        "target": 13645,
+        "prediction": 15,
+        "loss": 7.916621208190918
+      },
+      {
+        "row": 29,
+        "pair": 0,
+        "query": 85,
+        "target": 25152,
+        "prediction": 15,
+        "loss": 5.054206848144531
+      },
+      {
+        "row": 29,
+        "pair": 1,
+        "query": 96,
+        "target": 34236,
+        "prediction": 187,
+        "loss": 5.612831115722656
+      },
+      {
+        "row": 29,
+        "pair": 3,
+        "query": 99,
+        "target": 5697,
+        "prediction": 281,
+        "loss": 5.557352066040039
+      },
+      {
+        "row": 29,
+        "pair": 2,
+        "query": 102,
+        "target": 25734,
+        "prediction": 15,
+        "loss": 3.7246928215026855
+      },
+      {
+        "row": 30,
+        "pair": 0,
+        "query": 97,
+        "target": 22556,
+        "prediction": 22556,
+        "loss": 1.2535439729690552
+      },
+      {
+        "row": 30,
+        "pair": 3,
+        "query": 108,
+        "target": 41299,
+        "prediction": 279,
+        "loss": 7.424221038818359
+      },
+      {
+        "row": 30,
+        "pair": 1,
+        "query": 114,
+        "target": 45290,
+        "prediction": 187,
+        "loss": 7.751910209655762
+      },
+      {
+        "row": 30,
+        "pair": 2,
+        "query": 123,
+        "target": 23706,
+        "prediction": 13,
+        "loss": 6.677648544311523
+      },
+      {
+        "row": 31,
+        "pair": 2,
+        "query": 103,
+        "target": 30449,
+        "prediction": 239,
+        "loss": 3.4735522270202637
+      },
+      {
+        "row": 31,
+        "pair": 1,
+        "query": 106,
+        "target": 3107,
+        "prediction": 272,
+        "loss": 3.097031354904175
+      },
+      {
+        "row": 31,
+        "pair": 0,
+        "query": 112,
+        "target": 21690,
+        "prediction": 10,
+        "loss": 8.951681137084961
+      },
+      {
+        "row": 31,
+        "pair": 3,
+        "query": 122,
+        "target": 43701,
+        "prediction": 15,
+        "loss": 6.915189743041992
+      }
+    ]
+  },
+  "first_occurrence": {
+    "n": 128,
+    "loss": 14.861063003540039,
+    "top1": 0.0,
+    "target_vs_other_values_margin": -0.5671812295913696,
+    "rows": [
+      {
+        "row": 0,
+        "pair": 1,
+        "query": 6,
+        "target": 3180,
+        "prediction": 26010,
+        "loss": 12.418604850769043
+      },
+      {
+        "row": 0,
+        "pair": 0,
+        "query": 17,
+        "target": 11309,
+        "prediction": 13,
+        "loss": 12.437498092651367
+      },
+      {
+        "row": 0,
+        "pair": 2,
+        "query": 27,
+        "target": 15833,
+        "prediction": 187,
+        "loss": 13.426678657531738
+      },
+      {
+        "row": 0,
+        "pair": 3,
+        "query": 31,
+        "target": 15103,
+        "prediction": 472,
+        "loss": 11.775461196899414
+      },
+      {
+        "row": 1,
+        "pair": 0,
+        "query": 8,
+        "target": 26501,
+        "prediction": 15,
+        "loss": 16.149158477783203
+      },
+      {
+        "row": 1,
+        "pair": 2,
+        "query": 12,
+        "target": 3698,
+        "prediction": 15,
+        "loss": 11.97789478302002
+      },
+      {
+        "row": 1,
+        "pair": 1,
+        "query": 18,
+        "target": 22073,
+        "prediction": 15,
+        "loss": 14.133750915527344
+      },
+      {
+        "row": 1,
+        "pair": 3,
+        "query": 23,
+        "target": 20522,
+        "prediction": 15,
+        "loss": 13.094904899597168
+      },
+      {
+        "row": 2,
+        "pair": 1,
+        "query": 7,
+        "target": 19559,
+        "prediction": 13,
+        "loss": 16.59096336364746
+      },
+      {
+        "row": 2,
+        "pair": 0,
+        "query": 13,
+        "target": 2325,
+        "prediction": 281,
+        "loss": 11.85925006866455
+      },
+      {
+        "row": 2,
+        "pair": 2,
+        "query": 21,
+        "target": 7522,
+        "prediction": 15,
+        "loss": 11.204038619995117
+      },
+      {
+        "row": 2,
+        "pair": 3,
+        "query": 29,
+        "target": 9497,
+        "prediction": 15,
+        "loss": 11.395750999450684
+      },
+      {
+        "row": 3,
+        "pair": 1,
+        "query": 4,
+        "target": 10288,
+        "prediction": 15,
+        "loss": 19.05207061767578
+      },
+      {
+        "row": 3,
+        "pair": 0,
+        "query": 13,
+        "target": 2153,
+        "prediction": 15,
+        "loss": 12.44113540649414
+      },
+      {
+        "row": 3,
+        "pair": 2,
+        "query": 18,
+        "target": 13998,
+        "prediction": 15,
+        "loss": 12.671730041503906
+      },
+      {
+        "row": 3,
+        "pair": 3,
+        "query": 27,
+        "target": 26135,
+        "prediction": 249,
+        "loss": 12.621007919311523
+      },
+      {
+        "row": 4,
+        "pair": 1,
+        "query": 3,
+        "target": 26731,
+        "prediction": 187,
+        "loss": 14.654401779174805
+      },
+      {
+        "row": 4,
+        "pair": 2,
+        "query": 10,
+        "target": 49566,
+        "prediction": 15,
+        "loss": 14.043707847595215
+      },
+      {
+        "row": 4,
+        "pair": 3,
+        "query": 16,
+        "target": 11935,
+        "prediction": 434,
+        "loss": 13.49104118347168
+      },
+      {
+        "row": 4,
+        "pair": 0,
+        "query": 27,
+        "target": 9053,
+        "prediction": 15,
+        "loss": 12.618314743041992
+      },
+      {
+        "row": 5,
+        "pair": 1,
+        "query": 5,
+        "target": 15719,
+        "prediction": 187,
+        "loss": 14.672815322875977
+      },
+      {
+        "row": 5,
+        "pair": 0,
+        "query": 15,
+        "target": 31197,
+        "prediction": 187,
+        "loss": 16.210861206054688
+      },
+      {
+        "row": 5,
+        "pair": 2,
+        "query": 22,
+        "target": 15840,
+        "prediction": 327,
+        "loss": 13.874504089355469
+      },
+      {
+        "row": 5,
+        "pair": 3,
+        "query": 32,
+        "target": 38694,
+        "prediction": 187,
+        "loss": 15.087520599365234
+      },
+      {
+        "row": 6,
+        "pair": 0,
+        "query": 8,
+        "target": 178,
+        "prediction": 247,
+        "loss": 12.429336547851562
+      },
+      {
+        "row": 6,
+        "pair": 1,
+        "query": 11,
+        "target": 25006,
+        "prediction": 15,
+        "loss": 15.444238662719727
+      },
+      {
+        "row": 6,
+        "pair": 2,
+        "query": 17,
+        "target": 49562,
+        "prediction": 14,
+        "loss": 14.177656173706055
+      },
+      {
+        "row": 6,
+        "pair": 3,
+        "query": 24,
+        "target": 43537,
+        "prediction": 254,
+        "loss": 11.959895133972168
+      },
+      {
+        "row": 7,
+        "pair": 1,
+        "query": 2,
+        "target": 12873,
+        "prediction": 22430,
+        "loss": 17.865188598632812
+      },
+      {
+        "row": 7,
+        "pair": 0,
+        "query": 5,
+        "target": 47225,
+        "prediction": 273,
+        "loss": 16.83381462097168
+      },
+      {
+        "row": 7,
+        "pair": 3,
+        "query": 8,
+        "target": 22211,
+        "prediction": 434,
+        "loss": 11.958535194396973
+      },
+      {
+        "row": 7,
+        "pair": 2,
+        "query": 12,
+        "target": 48195,
+        "prediction": 15,
+        "loss": 14.571808815002441
+      },
+      {
+        "row": 8,
+        "pair": 3,
+        "query": 8,
+        "target": 27353,
+        "prediction": 13,
+        "loss": 11.126201629638672
+      },
+      {
+        "row": 8,
+        "pair": 1,
+        "query": 18,
+        "target": 35207,
+        "prediction": 13,
+        "loss": 13.756534576416016
+      },
+      {
+        "row": 8,
+        "pair": 0,
+        "query": 26,
+        "target": 11103,
+        "prediction": 457,
+        "loss": 13.895478248596191
+      },
+      {
+        "row": 8,
+        "pair": 2,
+        "query": 34,
+        "target": 24463,
+        "prediction": 253,
+        "loss": 16.84961700439453
+      },
+      {
+        "row": 9,
+        "pair": 0,
+        "query": 6,
+        "target": 21705,
+        "prediction": 53,
+        "loss": 12.345357894897461
+      },
+      {
+        "row": 9,
+        "pair": 2,
+        "query": 14,
+        "target": 36103,
+        "prediction": 15,
+        "loss": 19.055816650390625
+      },
+      {
+        "row": 9,
+        "pair": 3,
+        "query": 18,
+        "target": 5850,
+        "prediction": 84,
+        "loss": 13.155420303344727
+      },
+      {
+        "row": 9,
+        "pair": 1,
+        "query": 26,
+        "target": 10473,
+        "prediction": 15,
+        "loss": 13.406148910522461
+      },
+      {
+        "row": 10,
+        "pair": 2,
+        "query": 10,
+        "target": 10493,
+        "prediction": 187,
+        "loss": 14.542840957641602
+      },
+      {
+        "row": 10,
+        "pair": 0,
+        "query": 17,
+        "target": 32141,
+        "prediction": 187,
+        "loss": 16.001163482666016
+      },
+      {
+        "row": 10,
+        "pair": 3,
+        "query": 25,
+        "target": 16867,
+        "prediction": 187,
+        "loss": 12.557608604431152
+      },
+      {
+        "row": 10,
+        "pair": 1,
+        "query": 32,
+        "target": 9086,
+        "prediction": 83,
+        "loss": 12.686824798583984
+      },
+      {
+        "row": 11,
+        "pair": 3,
+        "query": 5,
+        "target": 15343,
+        "prediction": 3,
+        "loss": 9.41164779663086
+      },
+      {
+        "row": 11,
+        "pair": 1,
+        "query": 10,
+        "target": 14263,
+        "prediction": 273,
+        "loss": 11.741896629333496
+      },
+      {
+        "row": 11,
+        "pair": 0,
+        "query": 20,
+        "target": 34000,
+        "prediction": 1179,
+        "loss": 14.99404239654541
+      },
+      {
+        "row": 11,
+        "pair": 2,
+        "query": 28,
+        "target": 22521,
+        "prediction": 15,
+        "loss": 13.59091567993164
+      },
+      {
+        "row": 12,
+        "pair": 3,
+        "query": 3,
+        "target": 29026,
+        "prediction": 281,
+        "loss": 15.288211822509766
+      },
+      {
+        "row": 12,
+        "pair": 0,
+        "query": 10,
+        "target": 44660,
+        "prediction": 262,
+        "loss": 25.807592391967773
+      },
+      {
+        "row": 12,
+        "pair": 1,
+        "query": 21,
+        "target": 11840,
+        "prediction": 15,
+        "loss": 16.686660766601562
+      },
+      {
+        "row": 12,
+        "pair": 2,
+        "query": 28,
+        "target": 22623,
+        "prediction": 10411,
+        "loss": 20.571043014526367
+      },
+      {
+        "row": 13,
+        "pair": 0,
+        "query": 8,
+        "target": 11477,
+        "prediction": 27,
+        "loss": 14.962150573730469
+      },
+      {
+        "row": 13,
+        "pair": 3,
+        "query": 15,
+        "target": 25550,
+        "prediction": 285,
+        "loss": 12.471454620361328
+      },
+      {
+        "row": 13,
+        "pair": 1,
+        "query": 26,
+        "target": 1201,
+        "prediction": 947,
+        "loss": 14.108989715576172
+      },
+      {
+        "row": 13,
+        "pair": 2,
+        "query": 29,
+        "target": 37385,
+        "prediction": 15,
+        "loss": 12.390082359313965
+      },
+      {
+        "row": 14,
+        "pair": 1,
+        "query": 4,
+        "target": 34601,
+        "prediction": 187,
+        "loss": 18.553861618041992
+      },
+      {
+        "row": 14,
+        "pair": 0,
+        "query": 7,
+        "target": 15262,
+        "prediction": 13,
+        "loss": 17.724157333374023
+      },
+      {
+        "row": 14,
+        "pair": 3,
+        "query": 18,
+        "target": 49984,
+        "prediction": 15,
+        "loss": 16.522340774536133
+      },
+      {
+        "row": 14,
+        "pair": 2,
+        "query": 26,
+        "target": 33866,
+        "prediction": 263,
+        "loss": 17.515033721923828
+      },
+      {
+        "row": 15,
+        "pair": 3,
+        "query": 4,
+        "target": 38001,
+        "prediction": 253,
+        "loss": 15.214966773986816
+      },
+      {
+        "row": 15,
+        "pair": 0,
+        "query": 10,
+        "target": 36560,
+        "prediction": 242,
+        "loss": 27.398874282836914
+      },
+      {
+        "row": 15,
+        "pair": 2,
+        "query": 19,
+        "target": 30213,
+        "prediction": 757,
+        "loss": 15.202996253967285
+      },
+      {
+        "row": 15,
+        "pair": 1,
+        "query": 30,
+        "target": 16083,
+        "prediction": 15,
+        "loss": 15.99692153930664
+      },
+      {
+        "row": 16,
+        "pair": 3,
+        "query": 8,
+        "target": 42454,
+        "prediction": 1267,
+        "loss": 15.684060096740723
+      },
+      {
+        "row": 16,
+        "pair": 0,
+        "query": 17,
+        "target": 30341,
+        "prediction": 4280,
+        "loss": 15.954885482788086
+      },
+      {
+        "row": 16,
+        "pair": 2,
+        "query": 25,
+        "target": 23116,
+        "prediction": 433,
+        "loss": 14.800973892211914
+      },
+      {
+        "row": 16,
+        "pair": 1,
+        "query": 28,
+        "target": 13049,
+        "prediction": 327,
+        "loss": 17.928075790405273
+      },
+      {
+        "row": 17,
+        "pair": 1,
+        "query": 10,
+        "target": 13544,
+        "prediction": 15,
+        "loss": 16.155616760253906
+      },
+      {
+        "row": 17,
+        "pair": 2,
+        "query": 15,
+        "target": 8557,
+        "prediction": 326,
+        "loss": 11.499197006225586
+      },
+      {
+        "row": 17,
+        "pair": 3,
+        "query": 18,
+        "target": 49640,
+        "prediction": 15,
+        "loss": 15.46502685546875
+      },
+      {
+        "row": 17,
+        "pair": 0,
+        "query": 25,
+        "target": 49846,
+        "prediction": 9,
+        "loss": 18.051069259643555
+      },
+      {
+        "row": 18,
+        "pair": 0,
+        "query": 7,
+        "target": 17107,
+        "prediction": 15,
+        "loss": 10.311182022094727
+      },
+      {
+        "row": 18,
+        "pair": 3,
+        "query": 10,
+        "target": 29156,
+        "prediction": 253,
+        "loss": 13.523064613342285
+      },
+      {
+        "row": 18,
+        "pair": 2,
+        "query": 16,
+        "target": 18325,
+        "prediction": 589,
+        "loss": 21.139474868774414
+      },
+      {
+        "row": 18,
+        "pair": 1,
+        "query": 19,
+        "target": 22904,
+        "prediction": 187,
+        "loss": 14.105806350708008
+      },
+      {
+        "row": 19,
+        "pair": 0,
+        "query": 3,
+        "target": 3388,
+        "prediction": 13,
+        "loss": 11.583415985107422
+      },
+      {
+        "row": 19,
+        "pair": 3,
+        "query": 7,
+        "target": 7575,
+        "prediction": 15,
+        "loss": 12.123101234436035
+      },
+      {
+        "row": 19,
+        "pair": 2,
+        "query": 18,
+        "target": 37452,
+        "prediction": 25884,
+        "loss": 17.614816665649414
+      },
+      {
+        "row": 19,
+        "pair": 1,
+        "query": 22,
+        "target": 27718,
+        "prediction": 285,
+        "loss": 16.24904441833496
+      },
+      {
+        "row": 20,
+        "pair": 0,
+        "query": 4,
+        "target": 24645,
+        "prediction": 15,
+        "loss": 12.292141914367676
+      },
+      {
+        "row": 20,
+        "pair": 3,
+        "query": 15,
+        "target": 43807,
+        "prediction": 236,
+        "loss": 24.896442413330078
+      },
+      {
+        "row": 20,
+        "pair": 2,
+        "query": 23,
+        "target": 19071,
+        "prediction": 13,
+        "loss": 9.97443962097168
+      },
+      {
+        "row": 20,
+        "pair": 1,
+        "query": 29,
+        "target": 18575,
+        "prediction": 13,
+        "loss": 13.750237464904785
+      },
+      {
+        "row": 21,
+        "pair": 1,
+        "query": 10,
+        "target": 40991,
+        "prediction": 715,
+        "loss": 13.05069637298584
+      },
+      {
+        "row": 21,
+        "pair": 2,
+        "query": 21,
+        "target": 28926,
+        "prediction": 434,
+        "loss": 12.019241333007812
+      },
+      {
+        "row": 21,
+        "pair": 0,
+        "query": 30,
+        "target": 1301,
+        "prediction": 624,
+        "loss": 13.47554874420166
+      },
+      {
+        "row": 21,
+        "pair": 3,
+        "query": 33,
+        "target": 5529,
+        "prediction": 257,
+        "loss": 14.743341445922852
+      },
+      {
+        "row": 22,
+        "pair": 0,
+        "query": 5,
+        "target": 36388,
+        "prediction": 84,
+        "loss": 14.912435531616211
+      },
+      {
+        "row": 22,
+        "pair": 3,
+        "query": 16,
+        "target": 49530,
+        "prediction": 281,
+        "loss": 15.943028450012207
+      },
+      {
+        "row": 22,
+        "pair": 1,
+        "query": 26,
+        "target": 21941,
+        "prediction": 434,
+        "loss": 15.449729919433594
+      },
+      {
+        "row": 22,
+        "pair": 2,
+        "query": 34,
+        "target": 8053,
+        "prediction": 15,
+        "loss": 16.351364135742188
+      },
+      {
+        "row": 23,
+        "pair": 3,
+        "query": 5,
+        "target": 1010,
+        "prediction": 15,
+        "loss": 14.130781173706055
+      },
+      {
+        "row": 23,
+        "pair": 0,
+        "query": 14,
+        "target": 17722,
+        "prediction": 15,
+        "loss": 13.16629695892334
+      },
+      {
+        "row": 23,
+        "pair": 1,
+        "query": 19,
+        "target": 40585,
+        "prediction": 307,
+        "loss": 21.737314224243164
+      },
+      {
+        "row": 23,
+        "pair": 2,
+        "query": 26,
+        "target": 28647,
+        "prediction": 15,
+        "loss": 14.99354362487793
+      },
+      {
+        "row": 24,
+        "pair": 2,
+        "query": 7,
+        "target": 13329,
+        "prediction": 13,
+        "loss": 14.166017532348633
+      },
+      {
+        "row": 24,
+        "pair": 3,
+        "query": 11,
+        "target": 43456,
+        "prediction": 273,
+        "loss": 15.388225555419922
+      },
+      {
+        "row": 24,
+        "pair": 0,
+        "query": 21,
+        "target": 19546,
+        "prediction": 387,
+        "loss": 18.437538146972656
+      },
+      {
+        "row": 24,
+        "pair": 1,
+        "query": 30,
+        "target": 45900,
+        "prediction": 275,
+        "loss": 18.180011749267578
+      },
+      {
+        "row": 25,
+        "pair": 2,
+        "query": 6,
+        "target": 30289,
+        "prediction": 27,
+        "loss": 15.361767768859863
+      },
+      {
+        "row": 25,
+        "pair": 3,
+        "query": 13,
+        "target": 37597,
+        "prediction": 1179,
+        "loss": 14.08578872680664
+      },
+      {
+        "row": 25,
+        "pair": 1,
+        "query": 21,
+        "target": 5194,
+        "prediction": 62,
+        "loss": 11.11771011352539
+      },
+      {
+        "row": 25,
+        "pair": 0,
+        "query": 28,
+        "target": 39798,
+        "prediction": 314,
+        "loss": 19.846403121948242
+      },
+      {
+        "row": 26,
+        "pair": 1,
+        "query": 8,
+        "target": 22200,
+        "prediction": 408,
+        "loss": 19.0439453125
+      },
+      {
+        "row": 26,
+        "pair": 3,
+        "query": 14,
+        "target": 20223,
+        "prediction": 13,
+        "loss": 13.422331809997559
+      },
+      {
+        "row": 26,
+        "pair": 0,
+        "query": 22,
+        "target": 31034,
+        "prediction": 281,
+        "loss": 15.400653839111328
+      },
+      {
+        "row": 26,
+        "pair": 2,
+        "query": 32,
+        "target": 5104,
+        "prediction": 445,
+        "loss": 11.269771575927734
+      },
+      {
+        "row": 27,
+        "pair": 1,
+        "query": 2,
+        "target": 25184,
+        "prediction": 13,
+        "loss": 16.268035888671875
+      },
+      {
+        "row": 27,
+        "pair": 0,
+        "query": 9,
+        "target": 2388,
+        "prediction": 346,
+        "loss": 12.484809875488281
+      },
+      {
+        "row": 27,
+        "pair": 3,
+        "query": 17,
+        "target": 8085,
+        "prediction": 15,
+        "loss": 9.972085952758789
+      },
+      {
+        "row": 27,
+        "pair": 2,
+        "query": 22,
+        "target": 40411,
+        "prediction": 15,
+        "loss": 15.555822372436523
+      },
+      {
+        "row": 28,
+        "pair": 3,
+        "query": 10,
+        "target": 11530,
+        "prediction": 15,
+        "loss": 13.772468566894531
+      },
+      {
+        "row": 28,
+        "pair": 0,
+        "query": 15,
+        "target": 34538,
+        "prediction": 14,
+        "loss": 14.365365982055664
+      },
+      {
+        "row": 28,
+        "pair": 2,
+        "query": 22,
+        "target": 13645,
+        "prediction": 15,
+        "loss": 18.163599014282227
+      },
+      {
+        "row": 28,
+        "pair": 1,
+        "query": 25,
+        "target": 42477,
+        "prediction": 83,
+        "loss": 12.358452796936035
+      },
+      {
+        "row": 29,
+        "pair": 2,
+        "query": 9,
+        "target": 25734,
+        "prediction": 187,
+        "loss": 14.498183250427246
+      },
+      {
+        "row": 29,
+        "pair": 3,
+        "query": 12,
+        "target": 5697,
+        "prediction": 15,
+        "loss": 10.592416763305664
+      },
+      {
+        "row": 29,
+        "pair": 1,
+        "query": 16,
+        "target": 34236,
+        "prediction": 187,
+        "loss": 16.603904724121094
+      },
+      {
+        "row": 29,
+        "pair": 0,
+        "query": 25,
+        "target": 25152,
+        "prediction": 1372,
+        "loss": 16.4528865814209
+      },
+      {
+        "row": 30,
+        "pair": 1,
+        "query": 2,
+        "target": 45290,
+        "prediction": 15,
+        "loss": 18.13645362854004
+      },
+      {
+        "row": 30,
+        "pair": 3,
+        "query": 11,
+        "target": 41299,
+        "prediction": 621,
+        "loss": 15.896162033081055
+      },
+      {
+        "row": 30,
+        "pair": 2,
+        "query": 19,
+        "target": 23706,
+        "prediction": 187,
+        "loss": 17.174365997314453
+      },
+      {
+        "row": 30,
+        "pair": 0,
+        "query": 25,
+        "target": 22556,
+        "prediction": 11748,
+        "loss": 9.982484817504883
+      },
+      {
+        "row": 31,
+        "pair": 2,
+        "query": 9,
+        "target": 30449,
+        "prediction": 237,
+        "loss": 18.362869262695312
+      },
+      {
+        "row": 31,
+        "pair": 1,
+        "query": 16,
+        "target": 3107,
+        "prediction": 272,
+        "loss": 14.260024070739746
+      },
+      {
+        "row": 31,
+        "pair": 3,
+        "query": 19,
+        "target": 43701,
+        "prediction": 15,
+        "loss": 14.499107360839844
+      },
+      {
+        "row": 31,
+        "pair": 0,
+        "query": 29,
+        "target": 21690,
+        "prediction": 13,
+        "loss": 15.344610214233398
+      }
+    ]
+  },
+  "positional_baseline": {
+    "lag_selected_on_discovery": 24,
+    "evaluation_hit_rate": 0.0546875
+  },
+  "controls": {
+    "no_pair_history": {
+      "n": 128,
+      "loss": 13.875129699707031,
+      "top1": 0.0,
+      "target_vs_other_values_margin": -0.34771737456321716,
+      "rows": [
+        {
+          "row": 0,
+          "pair": 2,
+          "query": 96,
+          "target": 15833,
+          "prediction": 15,
+          "loss": 10.128910064697266
+        },
+        {
+          "row": 0,
+          "pair": 3,
+          "query": 101,
+          "target": 15103,
+          "prediction": 257,
+          "loss": 10.874090194702148
+        },
+        {
+          "row": 0,
+          "pair": 1,
+          "query": 111,
+          "target": 3180,
+          "prediction": 15,
+          "loss": 11.5259370803833
+        },
+        {
+          "row": 0,
+          "pair": 0,
+          "query": 121,
+          "target": 11309,
+          "prediction": 13,
+          "loss": 15.338334083557129
+        },
+        {
+          "row": 1,
+          "pair": 2,
+          "query": 93,
+          "target": 3698,
+          "prediction": 434,
+          "loss": 12.82025146484375
+        },
+        {
+          "row": 1,
+          "pair": 1,
+          "query": 101,
+          "target": 22073,
+          "prediction": 273,
+          "loss": 12.658349990844727
+        },
+        {
+          "row": 1,
+          "pair": 3,
+          "query": 105,
+          "target": 20522,
+          "prediction": 285,
+          "loss": 15.343092918395996
+        },
+        {
+          "row": 1,
+          "pair": 0,
+          "query": 108,
+          "target": 26501,
+          "prediction": 15,
+          "loss": 14.182251930236816
+        },
+        {
+          "row": 2,
+          "pair": 2,
+          "query": 90,
+          "target": 7522,
+          "prediction": 15,
+          "loss": 10.428905487060547
+        },
+        {
+          "row": 2,
+          "pair": 0,
+          "query": 100,
+          "target": 2325,
+          "prediction": 281,
+          "loss": 11.34614372253418
+        },
+        {
+          "row": 2,
+          "pair": 3,
+          "query": 106,
+          "target": 9497,
+          "prediction": 15,
+          "loss": 10.742780685424805
+        },
+        {
+          "row": 2,
+          "pair": 1,
+          "query": 111,
+          "target": 19559,
+          "prediction": 14,
+          "loss": 17.756759643554688
+        },
+        {
+          "row": 3,
+          "pair": 0,
+          "query": 94,
+          "target": 2153,
+          "prediction": 15,
+          "loss": 14.782228469848633
+        },
+        {
+          "row": 3,
+          "pair": 1,
+          "query": 98,
+          "target": 10288,
+          "prediction": 15,
+          "loss": 15.49383544921875
+        },
+        {
+          "row": 3,
+          "pair": 3,
+          "query": 109,
+          "target": 26135,
+          "prediction": 32805,
+          "loss": 11.464109420776367
+        },
+        {
+          "row": 3,
+          "pair": 2,
+          "query": 115,
+          "target": 13998,
+          "prediction": 15,
+          "loss": 12.250847816467285
+        },
+        {
+          "row": 4,
+          "pair": 3,
+          "query": 74,
+          "target": 11935,
+          "prediction": 15,
+          "loss": 13.887107849121094
+        },
+        {
+          "row": 4,
+          "pair": 1,
+          "query": 78,
+          "target": 26731,
+          "prediction": 187,
+          "loss": 16.44170570373535
+        },
+        {
+          "row": 4,
+          "pair": 0,
+          "query": 83,
+          "target": 9053,
+          "prediction": 9,
+          "loss": 12.00908088684082
+        },
+        {
+          "row": 4,
+          "pair": 2,
+          "query": 91,
+          "target": 49566,
+          "prediction": 13,
+          "loss": 12.201078414916992
+        },
+        {
+          "row": 5,
+          "pair": 3,
+          "query": 101,
+          "target": 38694,
+          "prediction": 323,
+          "loss": 13.751702308654785
+        },
+        {
+          "row": 5,
+          "pair": 0,
+          "query": 110,
+          "target": 31197,
+          "prediction": 15,
+          "loss": 13.191822052001953
+        },
+        {
+          "row": 5,
+          "pair": 1,
+          "query": 116,
+          "target": 15719,
+          "prediction": 19103,
+          "loss": 13.71506118774414
+        },
+        {
+          "row": 5,
+          "pair": 2,
+          "query": 126,
+          "target": 15840,
+          "prediction": 15,
+          "loss": 15.025859832763672
+        },
+        {
+          "row": 6,
+          "pair": 3,
+          "query": 96,
+          "target": 43537,
+          "prediction": 398,
+          "loss": 6.962976455688477
+        },
+        {
+          "row": 6,
+          "pair": 0,
+          "query": 107,
+          "target": 178,
+          "prediction": 247,
+          "loss": 13.456250190734863
+        },
+        {
+          "row": 6,
+          "pair": 2,
+          "query": 112,
+          "target": 49562,
+          "prediction": 15,
+          "loss": 13.760140419006348
+        },
+        {
+          "row": 6,
+          "pair": 1,
+          "query": 122,
+          "target": 25006,
+          "prediction": 382,
+          "loss": 13.454137802124023
+        },
+        {
+          "row": 7,
+          "pair": 1,
+          "query": 79,
+          "target": 12873,
+          "prediction": 21104,
+          "loss": 18.180381774902344
+        },
+        {
+          "row": 7,
+          "pair": 0,
+          "query": 87,
+          "target": 47225,
+          "prediction": 285,
+          "loss": 15.31208324432373
+        },
+        {
+          "row": 7,
+          "pair": 2,
+          "query": 96,
+          "target": 48195,
+          "prediction": 14,
+          "loss": 13.982294082641602
+        },
+        {
+          "row": 7,
+          "pair": 3,
+          "query": 103,
+          "target": 22211,
+          "prediction": 434,
+          "loss": 10.05851936340332
+        },
+        {
+          "row": 8,
+          "pair": 1,
+          "query": 109,
+          "target": 35207,
+          "prediction": 15,
+          "loss": 13.253110885620117
+        },
+        {
+          "row": 8,
+          "pair": 3,
+          "query": 113,
+          "target": 27353,
+          "prediction": 15,
+          "loss": 12.04023551940918
+        },
+        {
+          "row": 8,
+          "pair": 0,
+          "query": 118,
+          "target": 11103,
+          "prediction": 15,
+          "loss": 14.300485610961914
+        },
+        {
+          "row": 8,
+          "pair": 2,
+          "query": 128,
+          "target": 24463,
+          "prediction": 15,
+          "loss": 15.76300048828125
+        },
+        {
+          "row": 9,
+          "pair": 2,
+          "query": 88,
+          "target": 36103,
+          "prediction": 451,
+          "loss": 14.967367172241211
+        },
+        {
+          "row": 9,
+          "pair": 3,
+          "query": 96,
+          "target": 5850,
+          "prediction": 15,
+          "loss": 15.203994750976562
+        },
+        {
+          "row": 9,
+          "pair": 1,
+          "query": 105,
+          "target": 10473,
+          "prediction": 15,
+          "loss": 13.920483589172363
+        },
+        {
+          "row": 9,
+          "pair": 0,
+          "query": 112,
+          "target": 21705,
+          "prediction": 15,
+          "loss": 13.28404712677002
+        },
+        {
+          "row": 10,
+          "pair": 3,
+          "query": 99,
+          "target": 16867,
+          "prediction": 15,
+          "loss": 12.175626754760742
+        },
+        {
+          "row": 10,
+          "pair": 0,
+          "query": 109,
+          "target": 32141,
+          "prediction": 442,
+          "loss": 16.034019470214844
+        },
+        {
+          "row": 10,
+          "pair": 1,
+          "query": 119,
+          "target": 9086,
+          "prediction": 83,
+          "loss": 11.256203651428223
+        },
+        {
+          "row": 10,
+          "pair": 2,
+          "query": 130,
+          "target": 10493,
+          "prediction": 13,
+          "loss": 14.10725212097168
+        },
+        {
+          "row": 11,
+          "pair": 2,
+          "query": 84,
+          "target": 22521,
+          "prediction": 15,
+          "loss": 9.621347427368164
+        },
+        {
+          "row": 11,
+          "pair": 3,
+          "query": 95,
+          "target": 15343,
+          "prediction": 187,
+          "loss": 8.07658863067627
+        },
+        {
+          "row": 11,
+          "pair": 1,
+          "query": 104,
+          "target": 14263,
+          "prediction": 3,
+          "loss": 12.782628059387207
+        },
+        {
+          "row": 11,
+          "pair": 0,
+          "query": 112,
+          "target": 34000,
+          "prediction": 1179,
+          "loss": 14.734180450439453
+        },
+        {
+          "row": 12,
+          "pair": 3,
+          "query": 90,
+          "target": 29026,
+          "prediction": 13,
+          "loss": 12.428424835205078
+        },
+        {
+          "row": 12,
+          "pair": 0,
+          "query": 100,
+          "target": 44660,
+          "prediction": 262,
+          "loss": 23.740154266357422
+        },
+        {
+          "row": 12,
+          "pair": 2,
+          "query": 107,
+          "target": 22623,
+          "prediction": 15,
+          "loss": 15.691544532775879
+        },
+        {
+          "row": 12,
+          "pair": 1,
+          "query": 116,
+          "target": 11840,
+          "prediction": 15,
+          "loss": 12.769367218017578
+        },
+        {
+          "row": 13,
+          "pair": 0,
+          "query": 100,
+          "target": 11477,
+          "prediction": 27,
+          "loss": 14.30394172668457
+        },
+        {
+          "row": 13,
+          "pair": 2,
+          "query": 111,
+          "target": 37385,
+          "prediction": 3,
+          "loss": 9.377898216247559
+        },
+        {
+          "row": 13,
+          "pair": 1,
+          "query": 114,
+          "target": 1201,
+          "prediction": 14976,
+          "loss": 13.382891654968262
+        },
+        {
+          "row": 13,
+          "pair": 3,
+          "query": 124,
+          "target": 25550,
+          "prediction": 285,
+          "loss": 12.81324577331543
+        },
+        {
+          "row": 14,
+          "pair": 0,
+          "query": 91,
+          "target": 15262,
+          "prediction": 15,
+          "loss": 16.223142623901367
+        },
+        {
+          "row": 14,
+          "pair": 1,
+          "query": 94,
+          "target": 34601,
+          "prediction": 534,
+          "loss": 16.55906105041504
+        },
+        {
+          "row": 14,
+          "pair": 2,
+          "query": 98,
+          "target": 33866,
+          "prediction": 263,
+          "loss": 19.012615203857422
+        },
+        {
+          "row": 14,
+          "pair": 3,
+          "query": 104,
+          "target": 49984,
+          "prediction": 264,
+          "loss": 13.804930686950684
+        },
+        {
+          "row": 15,
+          "pair": 2,
+          "query": 112,
+          "target": 30213,
+          "prediction": 2458,
+          "loss": 18.109098434448242
+        },
+        {
+          "row": 15,
+          "pair": 1,
+          "query": 123,
+          "target": 16083,
+          "prediction": 15,
+          "loss": 13.86965274810791
+        },
+        {
+          "row": 15,
+          "pair": 0,
+          "query": 133,
+          "target": 36560,
+          "prediction": 242,
+          "loss": 26.719587326049805
+        },
+        {
+          "row": 15,
+          "pair": 3,
+          "query": 142,
+          "target": 38001,
+          "prediction": 15,
+          "loss": 13.316693305969238
+        },
+        {
+          "row": 16,
+          "pair": 1,
+          "query": 95,
+          "target": 13049,
+          "prediction": 15,
+          "loss": 14.647432327270508
+        },
+        {
+          "row": 16,
+          "pair": 3,
+          "query": 100,
+          "target": 42454,
+          "prediction": 342,
+          "loss": 15.845069885253906
+        },
+        {
+          "row": 16,
+          "pair": 0,
+          "query": 104,
+          "target": 30341,
+          "prediction": 54,
+          "loss": 13.967813491821289
+        },
+        {
+          "row": 16,
+          "pair": 2,
+          "query": 114,
+          "target": 23116,
+          "prediction": 72,
+          "loss": 14.29193115234375
+        },
+        {
+          "row": 17,
+          "pair": 1,
+          "query": 85,
+          "target": 13544,
+          "prediction": 15,
+          "loss": 14.967167854309082
+        },
+        {
+          "row": 17,
+          "pair": 2,
+          "query": 88,
+          "target": 8557,
+          "prediction": 326,
+          "loss": 11.34006118774414
+        },
+        {
+          "row": 17,
+          "pair": 3,
+          "query": 95,
+          "target": 49640,
+          "prediction": 15,
+          "loss": 14.721017837524414
+        },
+        {
+          "row": 17,
+          "pair": 0,
+          "query": 100,
+          "target": 49846,
+          "prediction": 9,
+          "loss": 16.656862258911133
+        },
+        {
+          "row": 18,
+          "pair": 3,
+          "query": 82,
+          "target": 29156,
+          "prediction": 253,
+          "loss": 10.121289253234863
+        },
+        {
+          "row": 18,
+          "pair": 2,
+          "query": 87,
+          "target": 18325,
+          "prediction": 589,
+          "loss": 24.260927200317383
+        },
+        {
+          "row": 18,
+          "pair": 1,
+          "query": 90,
+          "target": 22904,
+          "prediction": 187,
+          "loss": 11.815081596374512
+        },
+        {
+          "row": 18,
+          "pair": 0,
+          "query": 95,
+          "target": 17107,
+          "prediction": 15,
+          "loss": 11.878785133361816
+        },
+        {
+          "row": 19,
+          "pair": 0,
+          "query": 85,
+          "target": 3388,
+          "prediction": 15,
+          "loss": 11.101346015930176
+        },
+        {
+          "row": 19,
+          "pair": 1,
+          "query": 91,
+          "target": 27718,
+          "prediction": 14,
+          "loss": 15.67470645904541
+        },
+        {
+          "row": 19,
+          "pair": 2,
+          "query": 94,
+          "target": 37452,
+          "prediction": 515,
+          "loss": 16.371429443359375
+        },
+        {
+          "row": 19,
+          "pair": 3,
+          "query": 105,
+          "target": 7575,
+          "prediction": 15,
+          "loss": 13.268126487731934
+        },
+        {
+          "row": 20,
+          "pair": 1,
+          "query": 91,
+          "target": 18575,
+          "prediction": 15,
+          "loss": 12.357192993164062
+        },
+        {
+          "row": 20,
+          "pair": 0,
+          "query": 94,
+          "target": 24645,
+          "prediction": 290,
+          "loss": 10.794384956359863
+        },
+        {
+          "row": 20,
+          "pair": 2,
+          "query": 105,
+          "target": 19071,
+          "prediction": 2468,
+          "loss": 10.634268760681152
+        },
+        {
+          "row": 20,
+          "pair": 3,
+          "query": 114,
+          "target": 43807,
+          "prediction": 233,
+          "loss": 18.491037368774414
+        },
+        {
+          "row": 21,
+          "pair": 0,
+          "query": 82,
+          "target": 1301,
+          "prediction": 250,
+          "loss": 10.868486404418945
+        },
+        {
+          "row": 21,
+          "pair": 3,
+          "query": 89,
+          "target": 5529,
+          "prediction": 1255,
+          "loss": 17.12897491455078
+        },
+        {
+          "row": 21,
+          "pair": 2,
+          "query": 96,
+          "target": 28926,
+          "prediction": 382,
+          "loss": 11.215459823608398
+        },
+        {
+          "row": 21,
+          "pair": 1,
+          "query": 106,
+          "target": 40991,
+          "prediction": 58,
+          "loss": 13.141366958618164
+        },
+        {
+          "row": 22,
+          "pair": 0,
+          "query": 89,
+          "target": 36388,
+          "prediction": 84,
+          "loss": 11.845881462097168
+        },
+        {
+          "row": 22,
+          "pair": 2,
+          "query": 96,
+          "target": 8053,
+          "prediction": 14,
+          "loss": 11.481010437011719
+        },
+        {
+          "row": 22,
+          "pair": 1,
+          "query": 102,
+          "target": 21941,
+          "prediction": 434,
+          "loss": 13.761066436767578
+        },
+        {
+          "row": 22,
+          "pair": 3,
+          "query": 111,
+          "target": 49530,
+          "prediction": 281,
+          "loss": 12.637442588806152
+        },
+        {
+          "row": 23,
+          "pair": 1,
+          "query": 90,
+          "target": 40585,
+          "prediction": 348,
+          "loss": 26.555049896240234
+        },
+        {
+          "row": 23,
+          "pair": 2,
+          "query": 94,
+          "target": 28647,
+          "prediction": 15,
+          "loss": 12.388799667358398
+        },
+        {
+          "row": 23,
+          "pair": 0,
+          "query": 102,
+          "target": 17722,
+          "prediction": 24275,
+          "loss": 13.317493438720703
+        },
+        {
+          "row": 23,
+          "pair": 3,
+          "query": 106,
+          "target": 1010,
+          "prediction": 15,
+          "loss": 9.776678085327148
+        },
+        {
+          "row": 24,
+          "pair": 2,
+          "query": 102,
+          "target": 13329,
+          "prediction": 13,
+          "loss": 13.600957870483398
+        },
+        {
+          "row": 24,
+          "pair": 1,
+          "query": 112,
+          "target": 45900,
+          "prediction": 249,
+          "loss": 15.31496810913086
+        },
+        {
+          "row": 24,
+          "pair": 3,
+          "query": 120,
+          "target": 43456,
+          "prediction": 42132,
+          "loss": 11.695898056030273
+        },
+        {
+          "row": 24,
+          "pair": 0,
+          "query": 128,
+          "target": 19546,
+          "prediction": 13,
+          "loss": 13.135321617126465
+        },
+        {
+          "row": 25,
+          "pair": 3,
+          "query": 81,
+          "target": 37597,
+          "prediction": 1179,
+          "loss": 12.558429718017578
+        },
+        {
+          "row": 25,
+          "pair": 1,
+          "query": 92,
+          "target": 5194,
+          "prediction": 15,
+          "loss": 12.289936065673828
+        },
+        {
+          "row": 25,
+          "pair": 0,
+          "query": 98,
+          "target": 39798,
+          "prediction": 13,
+          "loss": 17.27063751220703
+        },
+        {
+          "row": 25,
+          "pair": 2,
+          "query": 102,
+          "target": 30289,
+          "prediction": 64,
+          "loss": 11.693718910217285
+        },
+        {
+          "row": 26,
+          "pair": 3,
+          "query": 89,
+          "target": 20223,
+          "prediction": 13,
+          "loss": 13.846065521240234
+        },
+        {
+          "row": 26,
+          "pair": 2,
+          "query": 95,
+          "target": 5104,
+          "prediction": 445,
+          "loss": 11.317541122436523
+        },
+        {
+          "row": 26,
+          "pair": 0,
+          "query": 103,
+          "target": 31034,
+          "prediction": 13,
+          "loss": 14.042536735534668
+        },
+        {
+          "row": 26,
+          "pair": 1,
+          "query": 114,
+          "target": 22200,
+          "prediction": 408,
+          "loss": 18.233078002929688
+        },
+        {
+          "row": 27,
+          "pair": 2,
+          "query": 81,
+          "target": 40411,
+          "prediction": 15,
+          "loss": 13.104607582092285
+        },
+        {
+          "row": 27,
+          "pair": 3,
+          "query": 85,
+          "target": 8085,
+          "prediction": 15,
+          "loss": 10.287177085876465
+        },
+        {
+          "row": 27,
+          "pair": 1,
+          "query": 88,
+          "target": 25184,
+          "prediction": 13,
+          "loss": 14.127527236938477
+        },
+        {
+          "row": 27,
+          "pair": 0,
+          "query": 91,
+          "target": 2388,
+          "prediction": 253,
+          "loss": 12.1057767868042
+        },
+        {
+          "row": 28,
+          "pair": 0,
+          "query": 93,
+          "target": 34538,
+          "prediction": 187,
+          "loss": 9.068775177001953
+        },
+        {
+          "row": 28,
+          "pair": 1,
+          "query": 96,
+          "target": 42477,
+          "prediction": 398,
+          "loss": 13.767678260803223
+        },
+        {
+          "row": 28,
+          "pair": 3,
+          "query": 103,
+          "target": 11530,
+          "prediction": 661,
+          "loss": 13.468284606933594
+        },
+        {
+          "row": 28,
+          "pair": 2,
+          "query": 112,
+          "target": 13645,
+          "prediction": 187,
+          "loss": 15.618929862976074
+        },
+        {
+          "row": 29,
+          "pair": 0,
+          "query": 85,
+          "target": 25152,
+          "prediction": 1372,
+          "loss": 12.711313247680664
+        },
+        {
+          "row": 29,
+          "pair": 1,
+          "query": 96,
+          "target": 34236,
+          "prediction": 187,
+          "loss": 13.695625305175781
+        },
+        {
+          "row": 29,
+          "pair": 3,
+          "query": 99,
+          "target": 5697,
+          "prediction": 15,
+          "loss": 13.344416618347168
+        },
+        {
+          "row": 29,
+          "pair": 2,
+          "query": 102,
+          "target": 25734,
+          "prediction": 15,
+          "loss": 15.613578796386719
+        },
+        {
+          "row": 30,
+          "pair": 0,
+          "query": 97,
+          "target": 22556,
+          "prediction": 434,
+          "loss": 10.380626678466797
+        },
+        {
+          "row": 30,
+          "pair": 3,
+          "query": 108,
+          "target": 41299,
+          "prediction": 279,
+          "loss": 19.413917541503906
+        },
+        {
+          "row": 30,
+          "pair": 1,
+          "query": 114,
+          "target": 45290,
+          "prediction": 569,
+          "loss": 17.62541389465332
+        },
+        {
+          "row": 30,
+          "pair": 2,
+          "query": 123,
+          "target": 23706,
+          "prediction": 187,
+          "loss": 12.947270393371582
+        },
+        {
+          "row": 31,
+          "pair": 2,
+          "query": 103,
+          "target": 30449,
+          "prediction": 237,
+          "loss": 17.69639015197754
+        },
+        {
+          "row": 31,
+          "pair": 1,
+          "query": 106,
+          "target": 3107,
+          "prediction": 10,
+          "loss": 15.530536651611328
+        },
+        {
+          "row": 31,
+          "pair": 0,
+          "query": 112,
+          "target": 21690,
+          "prediction": 10,
+          "loss": 13.710902214050293
+        },
+        {
+          "row": 31,
+          "pair": 3,
+          "query": 122,
+          "target": 43701,
+          "prediction": 15,
+          "loss": 13.305317878723145
+        }
+      ]
+    },
+    "rotated_values": {
+      "n": 128,
+      "loss": 6.251636981964111,
+      "top1": 0.1875,
+      "target_vs_other_values_margin": 7.430141448974609,
+      "rows": [
+        {
+          "row": 0,
+          "pair": 2,
+          "query": 96,
+          "target": 15103,
+          "prediction": 15103,
+          "loss": 0.27400729060173035
+        },
+        {
+          "row": 0,
+          "pair": 3,
+          "query": 101,
+          "target": 11309,
+          "prediction": 266,
+          "loss": 2.891331195831299
+        },
+        {
+          "row": 0,
+          "pair": 1,
+          "query": 111,
+          "target": 15833,
+          "prediction": 15,
+          "loss": 6.280689239501953
+        },
+        {
+          "row": 0,
+          "pair": 0,
+          "query": 121,
+          "target": 3180,
+          "prediction": 13,
+          "loss": 8.051852226257324
+        },
+        {
+          "row": 1,
+          "pair": 2,
+          "query": 93,
+          "target": 20522,
+          "prediction": 434,
+          "loss": 12.600215911865234
+        },
+        {
+          "row": 1,
+          "pair": 1,
+          "query": 101,
+          "target": 3698,
+          "prediction": 327,
+          "loss": 5.3569746017456055
+        },
+        {
+          "row": 1,
+          "pair": 3,
+          "query": 105,
+          "target": 26501,
+          "prediction": 15,
+          "loss": 4.634612083435059
+        },
+        {
+          "row": 1,
+          "pair": 0,
+          "query": 108,
+          "target": 22073,
+          "prediction": 15,
+          "loss": 6.142898082733154
+        },
+        {
+          "row": 2,
+          "pair": 2,
+          "query": 90,
+          "target": 9497,
+          "prediction": 13,
+          "loss": 3.285954713821411
+        },
+        {
+          "row": 2,
+          "pair": 0,
+          "query": 100,
+          "target": 19559,
+          "prediction": 281,
+          "loss": 6.945755958557129
+        },
+        {
+          "row": 2,
+          "pair": 3,
+          "query": 106,
+          "target": 2325,
+          "prediction": 15,
+          "loss": 8.319184303283691
+        },
+        {
+          "row": 2,
+          "pair": 1,
+          "query": 111,
+          "target": 7522,
+          "prediction": 15,
+          "loss": 4.880741119384766
+        },
+        {
+          "row": 3,
+          "pair": 0,
+          "query": 94,
+          "target": 10288,
+          "prediction": 15,
+          "loss": 8.637293815612793
+        },
+        {
+          "row": 3,
+          "pair": 1,
+          "query": 98,
+          "target": 13998,
+          "prediction": 15,
+          "loss": 12.557783126831055
+        },
+        {
+          "row": 3,
+          "pair": 3,
+          "query": 109,
+          "target": 2153,
+          "prediction": 2153,
+          "loss": 0.64903724193573
+        },
+        {
+          "row": 3,
+          "pair": 2,
+          "query": 115,
+          "target": 26135,
+          "prediction": 15,
+          "loss": 3.3359076976776123
+        },
+        {
+          "row": 4,
+          "pair": 3,
+          "query": 74,
+          "target": 9053,
+          "prediction": 15,
+          "loss": 11.94405460357666
+        },
+        {
+          "row": 4,
+          "pair": 1,
+          "query": 78,
+          "target": 49566,
+          "prediction": 187,
+          "loss": 8.507246017456055
+        },
+        {
+          "row": 4,
+          "pair": 0,
+          "query": 83,
+          "target": 26731,
+          "prediction": 9,
+          "loss": 7.9033708572387695
+        },
+        {
+          "row": 4,
+          "pair": 2,
+          "query": 91,
+          "target": 11935,
+          "prediction": 13,
+          "loss": 7.28394079208374
+        },
+        {
+          "row": 5,
+          "pair": 3,
+          "query": 101,
+          "target": 31197,
+          "prediction": 281,
+          "loss": 7.9921698570251465
+        },
+        {
+          "row": 5,
+          "pair": 0,
+          "query": 110,
+          "target": 15719,
+          "prediction": 15,
+          "loss": 9.616168975830078
+        },
+        {
+          "row": 5,
+          "pair": 1,
+          "query": 116,
+          "target": 15840,
+          "prediction": 15840,
+          "loss": 1.0376005172729492
+        },
+        {
+          "row": 5,
+          "pair": 2,
+          "query": 126,
+          "target": 38694,
+          "prediction": 15,
+          "loss": 8.679361343383789
+        },
+        {
+          "row": 6,
+          "pair": 3,
+          "query": 96,
+          "target": 178,
+          "prediction": 15,
+          "loss": 4.063868522644043
+        },
+        {
+          "row": 6,
+          "pair": 0,
+          "query": 107,
+          "target": 25006,
+          "prediction": 247,
+          "loss": 11.007196426391602
+        },
+        {
+          "row": 6,
+          "pair": 2,
+          "query": 112,
+          "target": 43537,
+          "prediction": 15,
+          "loss": 2.2417593002319336
+        },
+        {
+          "row": 6,
+          "pair": 1,
+          "query": 122,
+          "target": 49562,
+          "prediction": 382,
+          "loss": 9.470638275146484
+        },
+        {
+          "row": 7,
+          "pair": 1,
+          "query": 79,
+          "target": 48195,
+          "prediction": 21104,
+          "loss": 3.54848051071167
+        },
+        {
+          "row": 7,
+          "pair": 0,
+          "query": 87,
+          "target": 12873,
+          "prediction": 275,
+          "loss": 6.473599433898926
+        },
+        {
+          "row": 7,
+          "pair": 2,
+          "query": 96,
+          "target": 22211,
+          "prediction": 14,
+          "loss": 7.007594108581543
+        },
+        {
+          "row": 7,
+          "pair": 3,
+          "query": 103,
+          "target": 47225,
+          "prediction": 47225,
+          "loss": 2.1099886894226074
+        },
+        {
+          "row": 8,
+          "pair": 1,
+          "query": 109,
+          "target": 24463,
+          "prediction": 15,
+          "loss": 9.023168563842773
+        },
+        {
+          "row": 8,
+          "pair": 3,
+          "query": 113,
+          "target": 11103,
+          "prediction": 15,
+          "loss": 8.315871238708496
+        },
+        {
+          "row": 8,
+          "pair": 0,
+          "query": 118,
+          "target": 35207,
+          "prediction": 15,
+          "loss": 10.114359855651855
+        },
+        {
+          "row": 8,
+          "pair": 2,
+          "query": 128,
+          "target": 27353,
+          "prediction": 15,
+          "loss": 2.4557886123657227
+        },
+        {
+          "row": 9,
+          "pair": 2,
+          "query": 88,
+          "target": 5850,
+          "prediction": 15,
+          "loss": 11.677973747253418
+        },
+        {
+          "row": 9,
+          "pair": 3,
+          "query": 96,
+          "target": 21705,
+          "prediction": 15,
+          "loss": 4.297267436981201
+        },
+        {
+          "row": 9,
+          "pair": 1,
+          "query": 105,
+          "target": 36103,
+          "prediction": 15,
+          "loss": 11.801017761230469
+        },
+        {
+          "row": 9,
+          "pair": 0,
+          "query": 112,
+          "target": 10473,
+          "prediction": 15,
+          "loss": 9.326175689697266
+        },
+        {
+          "row": 10,
+          "pair": 3,
+          "query": 99,
+          "target": 32141,
+          "prediction": 15,
+          "loss": 9.130000114440918
+        },
+        {
+          "row": 10,
+          "pair": 0,
+          "query": 109,
+          "target": 9086,
+          "prediction": 13,
+          "loss": 8.487771987915039
+        },
+        {
+          "row": 10,
+          "pair": 1,
+          "query": 119,
+          "target": 10493,
+          "prediction": 15,
+          "loss": 3.6361005306243896
+        },
+        {
+          "row": 10,
+          "pair": 2,
+          "query": 130,
+          "target": 16867,
+          "prediction": 13,
+          "loss": 9.241918563842773
+        },
+        {
+          "row": 11,
+          "pair": 2,
+          "query": 84,
+          "target": 15343,
+          "prediction": 15,
+          "loss": 5.844886779785156
+        },
+        {
+          "row": 11,
+          "pair": 3,
+          "query": 95,
+          "target": 34000,
+          "prediction": 187,
+          "loss": 13.182930946350098
+        },
+        {
+          "row": 11,
+          "pair": 1,
+          "query": 104,
+          "target": 22521,
+          "prediction": 3,
+          "loss": 3.8408730030059814
+        },
+        {
+          "row": 11,
+          "pair": 0,
+          "query": 112,
+          "target": 14263,
+          "prediction": 14263,
+          "loss": 0.2825506925582886
+        },
+        {
+          "row": 12,
+          "pair": 3,
+          "query": 90,
+          "target": 44660,
+          "prediction": 13,
+          "loss": 9.320327758789062
+        },
+        {
+          "row": 12,
+          "pair": 0,
+          "query": 100,
+          "target": 11840,
+          "prediction": 5906,
+          "loss": 6.316214561462402
+        },
+        {
+          "row": 12,
+          "pair": 2,
+          "query": 107,
+          "target": 29026,
+          "prediction": 15,
+          "loss": 8.779029846191406
+        },
+        {
+          "row": 12,
+          "pair": 1,
+          "query": 116,
+          "target": 22623,
+          "prediction": 15,
+          "loss": 10.503832817077637
+        },
+        {
+          "row": 13,
+          "pair": 0,
+          "query": 100,
+          "target": 1201,
+          "prediction": 27,
+          "loss": 6.341342926025391
+        },
+        {
+          "row": 13,
+          "pair": 2,
+          "query": 111,
+          "target": 25550,
+          "prediction": 3,
+          "loss": 13.037469863891602
+        },
+        {
+          "row": 13,
+          "pair": 1,
+          "query": 114,
+          "target": 37385,
+          "prediction": 37385,
+          "loss": 0.8991153836250305
+        },
+        {
+          "row": 13,
+          "pair": 3,
+          "query": 124,
+          "target": 11477,
+          "prediction": 285,
+          "loss": 7.218770503997803
+        },
+        {
+          "row": 14,
+          "pair": 0,
+          "query": 91,
+          "target": 34601,
+          "prediction": 15,
+          "loss": 11.583703994750977
+        },
+        {
+          "row": 14,
+          "pair": 1,
+          "query": 94,
+          "target": 33866,
+          "prediction": 78,
+          "loss": 11.223052978515625
+        },
+        {
+          "row": 14,
+          "pair": 2,
+          "query": 98,
+          "target": 49984,
+          "prediction": 15,
+          "loss": 10.120018005371094
+        },
+        {
+          "row": 14,
+          "pair": 3,
+          "query": 104,
+          "target": 15262,
+          "prediction": 15,
+          "loss": 7.987270832061768
+        },
+        {
+          "row": 15,
+          "pair": 2,
+          "query": 112,
+          "target": 38001,
+          "prediction": 757,
+          "loss": 8.30872631072998
+        },
+        {
+          "row": 15,
+          "pair": 1,
+          "query": 123,
+          "target": 30213,
+          "prediction": 3650,
+          "loss": 3.067124128341675
+        },
+        {
+          "row": 15,
+          "pair": 0,
+          "query": 133,
+          "target": 16083,
+          "prediction": 123,
+          "loss": 4.418792724609375
+        },
+        {
+          "row": 15,
+          "pair": 3,
+          "query": 142,
+          "target": 36560,
+          "prediction": 253,
+          "loss": 11.813189506530762
+        },
+        {
+          "row": 16,
+          "pair": 1,
+          "query": 95,
+          "target": 23116,
+          "prediction": 23116,
+          "loss": 1.8441053628921509
+        },
+        {
+          "row": 16,
+          "pair": 3,
+          "query": 100,
+          "target": 30341,
+          "prediction": 281,
+          "loss": 10.416170120239258
+        },
+        {
+          "row": 16,
+          "pair": 0,
+          "query": 104,
+          "target": 13049,
+          "prediction": 13049,
+          "loss": 1.9339501857757568
+        },
+        {
+          "row": 16,
+          "pair": 2,
+          "query": 114,
+          "target": 42454,
+          "prediction": 15,
+          "loss": 11.66076374053955
+        },
+        {
+          "row": 17,
+          "pair": 1,
+          "query": 85,
+          "target": 8557,
+          "prediction": 8557,
+          "loss": 2.4270946979522705
+        },
+        {
+          "row": 17,
+          "pair": 2,
+          "query": 88,
+          "target": 49640,
+          "prediction": 326,
+          "loss": 12.33464241027832
+        },
+        {
+          "row": 17,
+          "pair": 3,
+          "query": 95,
+          "target": 49846,
+          "prediction": 2860,
+          "loss": 4.187264919281006
+        },
+        {
+          "row": 17,
+          "pair": 0,
+          "query": 100,
+          "target": 13544,
+          "prediction": 9,
+          "loss": 11.115617752075195
+        },
+        {
+          "row": 18,
+          "pair": 3,
+          "query": 82,
+          "target": 17107,
+          "prediction": 17107,
+          "loss": 0.8343359231948853
+        },
+        {
+          "row": 18,
+          "pair": 2,
+          "query": 87,
+          "target": 29156,
+          "prediction": 456,
+          "loss": 4.936716079711914
+        },
+        {
+          "row": 18,
+          "pair": 1,
+          "query": 90,
+          "target": 18325,
+          "prediction": 187,
+          "loss": 2.0781896114349365
+        },
+        {
+          "row": 18,
+          "pair": 0,
+          "query": 95,
+          "target": 22904,
+          "prediction": 15,
+          "loss": 9.056775093078613
+        },
+        {
+          "row": 19,
+          "pair": 0,
+          "query": 85,
+          "target": 27718,
+          "prediction": 15,
+          "loss": 10.248122215270996
+        },
+        {
+          "row": 19,
+          "pair": 1,
+          "query": 91,
+          "target": 37452,
+          "prediction": 14,
+          "loss": 8.173916816711426
+        },
+        {
+          "row": 19,
+          "pair": 2,
+          "query": 94,
+          "target": 7575,
+          "prediction": 7575,
+          "loss": 0.3445262610912323
+        },
+        {
+          "row": 19,
+          "pair": 3,
+          "query": 105,
+          "target": 3388,
+          "prediction": 15,
+          "loss": 4.3789544105529785
+        },
+        {
+          "row": 20,
+          "pair": 1,
+          "query": 91,
+          "target": 19071,
+          "prediction": 15,
+          "loss": 5.052996635437012
+        },
+        {
+          "row": 20,
+          "pair": 0,
+          "query": 94,
+          "target": 18575,
+          "prediction": 14,
+          "loss": 7.552226543426514
+        },
+        {
+          "row": 20,
+          "pair": 2,
+          "query": 105,
+          "target": 43807,
+          "prediction": 15,
+          "loss": 9.782746315002441
+        },
+        {
+          "row": 20,
+          "pair": 3,
+          "query": 114,
+          "target": 24645,
+          "prediction": 233,
+          "loss": 9.267732620239258
+        },
+        {
+          "row": 21,
+          "pair": 0,
+          "query": 82,
+          "target": 40991,
+          "prediction": 20,
+          "loss": 5.678238868713379
+        },
+        {
+          "row": 21,
+          "pair": 3,
+          "query": 89,
+          "target": 1301,
+          "prediction": 1301,
+          "loss": 0.9855274558067322
+        },
+        {
+          "row": 21,
+          "pair": 2,
+          "query": 96,
+          "target": 5529,
+          "prediction": 15,
+          "loss": 5.568476676940918
+        },
+        {
+          "row": 21,
+          "pair": 1,
+          "query": 106,
+          "target": 28926,
+          "prediction": 272,
+          "loss": 3.4070324897766113
+        },
+        {
+          "row": 22,
+          "pair": 0,
+          "query": 89,
+          "target": 21941,
+          "prediction": 84,
+          "loss": 5.3870463371276855
+        },
+        {
+          "row": 22,
+          "pair": 2,
+          "query": 96,
+          "target": 49530,
+          "prediction": 14,
+          "loss": 10.03177547454834
+        },
+        {
+          "row": 22,
+          "pair": 1,
+          "query": 102,
+          "target": 8053,
+          "prediction": 434,
+          "loss": 2.8756425380706787
+        },
+        {
+          "row": 22,
+          "pair": 3,
+          "query": 111,
+          "target": 36388,
+          "prediction": 380,
+          "loss": 4.53955602645874
+        },
+        {
+          "row": 23,
+          "pair": 1,
+          "query": 90,
+          "target": 28647,
+          "prediction": 348,
+          "loss": 15.333868980407715
+        },
+        {
+          "row": 23,
+          "pair": 2,
+          "query": 94,
+          "target": 1010,
+          "prediction": 1010,
+          "loss": 0.13198021054267883
+        },
+        {
+          "row": 23,
+          "pair": 0,
+          "query": 102,
+          "target": 40585,
+          "prediction": 15,
+          "loss": 6.4315185546875
+        },
+        {
+          "row": 23,
+          "pair": 3,
+          "query": 106,
+          "target": 17722,
+          "prediction": 17722,
+          "loss": 3.548577070236206
+        },
+        {
+          "row": 24,
+          "pair": 2,
+          "query": 102,
+          "target": 43456,
+          "prediction": 27,
+          "loss": 4.850123882293701
+        },
+        {
+          "row": 24,
+          "pair": 1,
+          "query": 112,
+          "target": 13329,
+          "prediction": 34419,
+          "loss": 5.305357933044434
+        },
+        {
+          "row": 24,
+          "pair": 3,
+          "query": 120,
+          "target": 19546,
+          "prediction": 19546,
+          "loss": 1.9643317461013794
+        },
+        {
+          "row": 24,
+          "pair": 0,
+          "query": 128,
+          "target": 45900,
+          "prediction": 562,
+          "loss": 5.187892436981201
+        },
+        {
+          "row": 25,
+          "pair": 3,
+          "query": 81,
+          "target": 39798,
+          "prediction": 39798,
+          "loss": 0.005687009077519178
+        },
+        {
+          "row": 25,
+          "pair": 1,
+          "query": 92,
+          "target": 30289,
+          "prediction": 15,
+          "loss": 8.252339363098145
+        },
+        {
+          "row": 25,
+          "pair": 0,
+          "query": 98,
+          "target": 5194,
+          "prediction": 15,
+          "loss": 9.258064270019531
+        },
+        {
+          "row": 25,
+          "pair": 2,
+          "query": 102,
+          "target": 37597,
+          "prediction": 37597,
+          "loss": 1.4411932229995728
+        },
+        {
+          "row": 26,
+          "pair": 3,
+          "query": 89,
+          "target": 31034,
+          "prediction": 31034,
+          "loss": 1.0191960334777832
+        },
+        {
+          "row": 26,
+          "pair": 2,
+          "query": 95,
+          "target": 20223,
+          "prediction": 445,
+          "loss": 10.158119201660156
+        },
+        {
+          "row": 26,
+          "pair": 0,
+          "query": 103,
+          "target": 22200,
+          "prediction": 13,
+          "loss": 7.729701042175293
+        },
+        {
+          "row": 26,
+          "pair": 1,
+          "query": 114,
+          "target": 5104,
+          "prediction": 5104,
+          "loss": 0.029825976118445396
+        },
+        {
+          "row": 27,
+          "pair": 2,
+          "query": 81,
+          "target": 8085,
+          "prediction": 15,
+          "loss": 5.923267364501953
+        },
+        {
+          "row": 27,
+          "pair": 3,
+          "query": 85,
+          "target": 2388,
+          "prediction": 2388,
+          "loss": 0.13388550281524658
+        },
+        {
+          "row": 27,
+          "pair": 1,
+          "query": 88,
+          "target": 40411,
+          "prediction": 13,
+          "loss": 7.710405349731445
+        },
+        {
+          "row": 27,
+          "pair": 0,
+          "query": 91,
+          "target": 25184,
+          "prediction": 25184,
+          "loss": 0.9669613838195801
+        },
+        {
+          "row": 28,
+          "pair": 0,
+          "query": 93,
+          "target": 42477,
+          "prediction": 187,
+          "loss": 5.144502639770508
+        },
+        {
+          "row": 28,
+          "pair": 1,
+          "query": 96,
+          "target": 13645,
+          "prediction": 1020,
+          "loss": 5.679718494415283
+        },
+        {
+          "row": 28,
+          "pair": 3,
+          "query": 103,
+          "target": 34538,
+          "prediction": 15,
+          "loss": 5.8670148849487305
+        },
+        {
+          "row": 28,
+          "pair": 2,
+          "query": 112,
+          "target": 11530,
+          "prediction": 11530,
+          "loss": 2.6311357021331787
+        },
+        {
+          "row": 29,
+          "pair": 0,
+          "query": 85,
+          "target": 34236,
+          "prediction": 15,
+          "loss": 5.693729400634766
+        },
+        {
+          "row": 29,
+          "pair": 1,
+          "query": 96,
+          "target": 25734,
+          "prediction": 25734,
+          "loss": 2.605553150177002
+        },
+        {
+          "row": 29,
+          "pair": 3,
+          "query": 99,
+          "target": 25152,
+          "prediction": 15,
+          "loss": 4.882352352142334
+        },
+        {
+          "row": 29,
+          "pair": 2,
+          "query": 102,
+          "target": 5697,
+          "prediction": 15,
+          "loss": 6.191816329956055
+        },
+        {
+          "row": 30,
+          "pair": 0,
+          "query": 97,
+          "target": 45290,
+          "prediction": 434,
+          "loss": 10.791718482971191
+        },
+        {
+          "row": 30,
+          "pair": 3,
+          "query": 108,
+          "target": 22556,
+          "prediction": 15,
+          "loss": 1.7318084239959717
+        },
+        {
+          "row": 30,
+          "pair": 1,
+          "query": 114,
+          "target": 23706,
+          "prediction": 23706,
+          "loss": 1.6414276361465454
+        },
+        {
+          "row": 30,
+          "pair": 2,
+          "query": 123,
+          "target": 41299,
+          "prediction": 13,
+          "loss": 6.621217727661133
+        },
+        {
+          "row": 31,
+          "pair": 2,
+          "query": 103,
+          "target": 43701,
+          "prediction": 239,
+          "loss": 5.787608623504639
+        },
+        {
+          "row": 31,
+          "pair": 1,
+          "query": 106,
+          "target": 30449,
+          "prediction": 10,
+          "loss": 6.785078525543213
+        },
+        {
+          "row": 31,
+          "pair": 0,
+          "query": 112,
+          "target": 3107,
+          "prediction": 14,
+          "loss": 6.378665924072266
+        },
+        {
+          "row": 31,
+          "pair": 3,
+          "query": 122,
+          "target": 21690,
+          "prediction": 15,
+          "loss": 4.965834617614746
+        }
+      ]
+    },
+    "rotated_values_scored_against_original_answers": {
+      "n": 128,
+      "loss": 13.97962474822998,
+      "top1": 0.0,
+      "target_vs_other_values_margin": -2.8738417625427246,
+      "rows": [
+        {
+          "row": 0,
+          "pair": 2,
+          "query": 96,
+          "target": 15833,
+          "prediction": 15103,
+          "loss": 13.815061569213867
+        },
+        {
+          "row": 0,
+          "pair": 3,
+          "query": 101,
+          "target": 15103,
+          "prediction": 266,
+          "loss": 9.635272979736328
+        },
+        {
+          "row": 0,
+          "pair": 1,
+          "query": 111,
+          "target": 3180,
+          "prediction": 15,
+          "loss": 15.92129135131836
+        },
+        {
+          "row": 0,
+          "pair": 0,
+          "query": 121,
+          "target": 11309,
+          "prediction": 13,
+          "loss": 16.5189266204834
+        },
+        {
+          "row": 1,
+          "pair": 2,
+          "query": 93,
+          "target": 3698,
+          "prediction": 434,
+          "loss": 15.54286003112793
+        },
+        {
+          "row": 1,
+          "pair": 1,
+          "query": 101,
+          "target": 22073,
+          "prediction": 327,
+          "loss": 11.538946151733398
+        },
+        {
+          "row": 1,
+          "pair": 3,
+          "query": 105,
+          "target": 20522,
+          "prediction": 15,
+          "loss": 15.082795143127441
+        },
+        {
+          "row": 1,
+          "pair": 0,
+          "query": 108,
+          "target": 26501,
+          "prediction": 15,
+          "loss": 14.79860782623291
+        },
+        {
+          "row": 2,
+          "pair": 2,
+          "query": 90,
+          "target": 7522,
+          "prediction": 13,
+          "loss": 10.077322006225586
+        },
+        {
+          "row": 2,
+          "pair": 0,
+          "query": 100,
+          "target": 2325,
+          "prediction": 281,
+          "loss": 11.185205459594727
+        },
+        {
+          "row": 2,
+          "pair": 3,
+          "query": 106,
+          "target": 9497,
+          "prediction": 15,
+          "loss": 10.445443153381348
+        },
+        {
+          "row": 2,
+          "pair": 1,
+          "query": 111,
+          "target": 19559,
+          "prediction": 15,
+          "loss": 16.730682373046875
+        },
+        {
+          "row": 3,
+          "pair": 0,
+          "query": 94,
+          "target": 2153,
+          "prediction": 15,
+          "loss": 12.680763244628906
+        },
+        {
+          "row": 3,
+          "pair": 1,
+          "query": 98,
+          "target": 10288,
+          "prediction": 15,
+          "loss": 14.677328109741211
+        },
+        {
+          "row": 3,
+          "pair": 3,
+          "query": 109,
+          "target": 26135,
+          "prediction": 2153,
+          "loss": 14.883720397949219
+        },
+        {
+          "row": 3,
+          "pair": 2,
+          "query": 115,
+          "target": 13998,
+          "prediction": 15,
+          "loss": 15.218900680541992
+        },
+        {
+          "row": 4,
+          "pair": 3,
+          "query": 74,
+          "target": 11935,
+          "prediction": 15,
+          "loss": 13.26512622833252
+        },
+        {
+          "row": 4,
+          "pair": 1,
+          "query": 78,
+          "target": 26731,
+          "prediction": 187,
+          "loss": 15.956192970275879
+        },
+        {
+          "row": 4,
+          "pair": 0,
+          "query": 83,
+          "target": 9053,
+          "prediction": 9,
+          "loss": 12.696122169494629
+        },
+        {
+          "row": 4,
+          "pair": 2,
+          "query": 91,
+          "target": 49566,
+          "prediction": 13,
+          "loss": 12.658452987670898
+        },
+        {
+          "row": 5,
+          "pair": 3,
+          "query": 101,
+          "target": 38694,
+          "prediction": 281,
+          "loss": 14.402462005615234
+        },
+        {
+          "row": 5,
+          "pair": 0,
+          "query": 110,
+          "target": 31197,
+          "prediction": 15,
+          "loss": 11.946316719055176
+        },
+        {
+          "row": 5,
+          "pair": 1,
+          "query": 116,
+          "target": 15719,
+          "prediction": 15840,
+          "loss": 16.40109634399414
+        },
+        {
+          "row": 5,
+          "pair": 2,
+          "query": 126,
+          "target": 15840,
+          "prediction": 15,
+          "loss": 12.455852508544922
+        },
+        {
+          "row": 6,
+          "pair": 3,
+          "query": 96,
+          "target": 43537,
+          "prediction": 15,
+          "loss": 10.474679946899414
+        },
+        {
+          "row": 6,
+          "pair": 0,
+          "query": 107,
+          "target": 178,
+          "prediction": 247,
+          "loss": 13.227160453796387
+        },
+        {
+          "row": 6,
+          "pair": 2,
+          "query": 112,
+          "target": 49562,
+          "prediction": 15,
+          "loss": 16.9693603515625
+        },
+        {
+          "row": 6,
+          "pair": 1,
+          "query": 122,
+          "target": 25006,
+          "prediction": 382,
+          "loss": 11.557254791259766
+        },
+        {
+          "row": 7,
+          "pair": 1,
+          "query": 79,
+          "target": 12873,
+          "prediction": 21104,
+          "loss": 14.506193161010742
+        },
+        {
+          "row": 7,
+          "pair": 0,
+          "query": 87,
+          "target": 47225,
+          "prediction": 275,
+          "loss": 14.720602035522461
+        },
+        {
+          "row": 7,
+          "pair": 2,
+          "query": 96,
+          "target": 48195,
+          "prediction": 14,
+          "loss": 12.036632537841797
+        },
+        {
+          "row": 7,
+          "pair": 3,
+          "query": 103,
+          "target": 22211,
+          "prediction": 47225,
+          "loss": 10.36180305480957
+        },
+        {
+          "row": 8,
+          "pair": 1,
+          "query": 109,
+          "target": 35207,
+          "prediction": 15,
+          "loss": 13.190370559692383
+        },
+        {
+          "row": 8,
+          "pair": 3,
+          "query": 113,
+          "target": 27353,
+          "prediction": 15,
+          "loss": 11.265800476074219
+        },
+        {
+          "row": 8,
+          "pair": 0,
+          "query": 118,
+          "target": 11103,
+          "prediction": 15,
+          "loss": 12.83994197845459
+        },
+        {
+          "row": 8,
+          "pair": 2,
+          "query": 128,
+          "target": 24463,
+          "prediction": 15,
+          "loss": 15.91963005065918
+        },
+        {
+          "row": 9,
+          "pair": 2,
+          "query": 88,
+          "target": 36103,
+          "prediction": 15,
+          "loss": 12.887871742248535
+        },
+        {
+          "row": 9,
+          "pair": 3,
+          "query": 96,
+          "target": 5850,
+          "prediction": 15,
+          "loss": 14.892534255981445
+        },
+        {
+          "row": 9,
+          "pair": 1,
+          "query": 105,
+          "target": 10473,
+          "prediction": 15,
+          "loss": 13.803242683410645
+        },
+        {
+          "row": 9,
+          "pair": 0,
+          "query": 112,
+          "target": 21705,
+          "prediction": 15,
+          "loss": 12.675143241882324
+        },
+        {
+          "row": 10,
+          "pair": 3,
+          "query": 99,
+          "target": 16867,
+          "prediction": 15,
+          "loss": 11.89126205444336
+        },
+        {
+          "row": 10,
+          "pair": 0,
+          "query": 109,
+          "target": 32141,
+          "prediction": 13,
+          "loss": 14.433511734008789
+        },
+        {
+          "row": 10,
+          "pair": 1,
+          "query": 119,
+          "target": 9086,
+          "prediction": 15,
+          "loss": 9.91775894165039
+        },
+        {
+          "row": 10,
+          "pair": 2,
+          "query": 130,
+          "target": 10493,
+          "prediction": 13,
+          "loss": 13.220727920532227
+        },
+        {
+          "row": 11,
+          "pair": 2,
+          "query": 84,
+          "target": 22521,
+          "prediction": 15,
+          "loss": 8.595890998840332
+        },
+        {
+          "row": 11,
+          "pair": 3,
+          "query": 95,
+          "target": 15343,
+          "prediction": 187,
+          "loss": 8.0127592086792
+        },
+        {
+          "row": 11,
+          "pair": 1,
+          "query": 104,
+          "target": 14263,
+          "prediction": 3,
+          "loss": 13.523058891296387
+        },
+        {
+          "row": 11,
+          "pair": 0,
+          "query": 112,
+          "target": 34000,
+          "prediction": 14263,
+          "loss": 18.31848907470703
+        },
+        {
+          "row": 12,
+          "pair": 3,
+          "query": 90,
+          "target": 29026,
+          "prediction": 13,
+          "loss": 13.470366477966309
+        },
+        {
+          "row": 12,
+          "pair": 0,
+          "query": 100,
+          "target": 44660,
+          "prediction": 5906,
+          "loss": 21.607147216796875
+        },
+        {
+          "row": 12,
+          "pair": 2,
+          "query": 107,
+          "target": 22623,
+          "prediction": 15,
+          "loss": 15.848615646362305
+        },
+        {
+          "row": 12,
+          "pair": 1,
+          "query": 116,
+          "target": 11840,
+          "prediction": 15,
+          "loss": 13.534401893615723
+        },
+        {
+          "row": 13,
+          "pair": 0,
+          "query": 100,
+          "target": 11477,
+          "prediction": 27,
+          "loss": 14.651785850524902
+        },
+        {
+          "row": 13,
+          "pair": 2,
+          "query": 111,
+          "target": 37385,
+          "prediction": 3,
+          "loss": 9.754746437072754
+        },
+        {
+          "row": 13,
+          "pair": 1,
+          "query": 114,
+          "target": 1201,
+          "prediction": 37385,
+          "loss": 14.990263938903809
+        },
+        {
+          "row": 13,
+          "pair": 3,
+          "query": 124,
+          "target": 25550,
+          "prediction": 285,
+          "loss": 12.978628158569336
+        },
+        {
+          "row": 14,
+          "pair": 0,
+          "query": 91,
+          "target": 15262,
+          "prediction": 15,
+          "loss": 15.759695053100586
+        },
+        {
+          "row": 14,
+          "pair": 1,
+          "query": 94,
+          "target": 34601,
+          "prediction": 78,
+          "loss": 17.51529312133789
+        },
+        {
+          "row": 14,
+          "pair": 2,
+          "query": 98,
+          "target": 33866,
+          "prediction": 15,
+          "loss": 18.198095321655273
+        },
+        {
+          "row": 14,
+          "pair": 3,
+          "query": 104,
+          "target": 49984,
+          "prediction": 15,
+          "loss": 14.330764770507812
+        },
+        {
+          "row": 15,
+          "pair": 2,
+          "query": 112,
+          "target": 30213,
+          "prediction": 757,
+          "loss": 16.351600646972656
+        },
+        {
+          "row": 15,
+          "pair": 1,
+          "query": 123,
+          "target": 16083,
+          "prediction": 3650,
+          "loss": 13.050520896911621
+        },
+        {
+          "row": 15,
+          "pair": 0,
+          "query": 133,
+          "target": 36560,
+          "prediction": 123,
+          "loss": 25.482067108154297
+        },
+        {
+          "row": 15,
+          "pair": 3,
+          "query": 142,
+          "target": 38001,
+          "prediction": 253,
+          "loss": 14.395811080932617
+        },
+        {
+          "row": 16,
+          "pair": 1,
+          "query": 95,
+          "target": 13049,
+          "prediction": 23116,
+          "loss": 16.981372833251953
+        },
+        {
+          "row": 16,
+          "pair": 3,
+          "query": 100,
+          "target": 42454,
+          "prediction": 281,
+          "loss": 15.180164337158203
+        },
+        {
+          "row": 16,
+          "pair": 0,
+          "query": 104,
+          "target": 30341,
+          "prediction": 13049,
+          "loss": 12.373921394348145
+        },
+        {
+          "row": 16,
+          "pair": 2,
+          "query": 114,
+          "target": 23116,
+          "prediction": 15,
+          "loss": 14.234566688537598
+        },
+        {
+          "row": 17,
+          "pair": 1,
+          "query": 85,
+          "target": 13544,
+          "prediction": 8557,
+          "loss": 16.902820587158203
+        },
+        {
+          "row": 17,
+          "pair": 2,
+          "query": 88,
+          "target": 8557,
+          "prediction": 326,
+          "loss": 11.64990234375
+        },
+        {
+          "row": 17,
+          "pair": 3,
+          "query": 95,
+          "target": 49640,
+          "prediction": 2860,
+          "loss": 17.77315902709961
+        },
+        {
+          "row": 17,
+          "pair": 0,
+          "query": 100,
+          "target": 49846,
+          "prediction": 9,
+          "loss": 15.950411796569824
+        },
+        {
+          "row": 18,
+          "pair": 3,
+          "query": 82,
+          "target": 29156,
+          "prediction": 17107,
+          "loss": 10.838565826416016
+        },
+        {
+          "row": 18,
+          "pair": 2,
+          "query": 87,
+          "target": 18325,
+          "prediction": 456,
+          "loss": 12.943946838378906
+        },
+        {
+          "row": 18,
+          "pair": 1,
+          "query": 90,
+          "target": 22904,
+          "prediction": 187,
+          "loss": 11.58912467956543
+        },
+        {
+          "row": 18,
+          "pair": 0,
+          "query": 95,
+          "target": 17107,
+          "prediction": 15,
+          "loss": 12.353278160095215
+        },
+        {
+          "row": 19,
+          "pair": 0,
+          "query": 85,
+          "target": 3388,
+          "prediction": 15,
+          "loss": 10.016138076782227
+        },
+        {
+          "row": 19,
+          "pair": 1,
+          "query": 91,
+          "target": 27718,
+          "prediction": 14,
+          "loss": 12.966806411743164
+        },
+        {
+          "row": 19,
+          "pair": 2,
+          "query": 94,
+          "target": 37452,
+          "prediction": 7575,
+          "loss": 15.418938636779785
+        },
+        {
+          "row": 19,
+          "pair": 3,
+          "query": 105,
+          "target": 7575,
+          "prediction": 15,
+          "loss": 13.846908569335938
+        },
+        {
+          "row": 20,
+          "pair": 1,
+          "query": 91,
+          "target": 18575,
+          "prediction": 15,
+          "loss": 9.316953659057617
+        },
+        {
+          "row": 20,
+          "pair": 0,
+          "query": 94,
+          "target": 24645,
+          "prediction": 14,
+          "loss": 10.843854904174805
+        },
+        {
+          "row": 20,
+          "pair": 2,
+          "query": 105,
+          "target": 19071,
+          "prediction": 15,
+          "loss": 11.090429306030273
+        },
+        {
+          "row": 20,
+          "pair": 3,
+          "query": 114,
+          "target": 43807,
+          "prediction": 233,
+          "loss": 17.996519088745117
+        },
+        {
+          "row": 21,
+          "pair": 0,
+          "query": 82,
+          "target": 1301,
+          "prediction": 20,
+          "loss": 11.177816390991211
+        },
+        {
+          "row": 21,
+          "pair": 3,
+          "query": 89,
+          "target": 5529,
+          "prediction": 1301,
+          "loss": 14.166060447692871
+        },
+        {
+          "row": 21,
+          "pair": 2,
+          "query": 96,
+          "target": 28926,
+          "prediction": 15,
+          "loss": 10.954668045043945
+        },
+        {
+          "row": 21,
+          "pair": 1,
+          "query": 106,
+          "target": 40991,
+          "prediction": 272,
+          "loss": 12.607900619506836
+        },
+        {
+          "row": 22,
+          "pair": 0,
+          "query": 89,
+          "target": 36388,
+          "prediction": 84,
+          "loss": 13.242026329040527
+        },
+        {
+          "row": 22,
+          "pair": 2,
+          "query": 96,
+          "target": 8053,
+          "prediction": 14,
+          "loss": 12.307722091674805
+        },
+        {
+          "row": 22,
+          "pair": 1,
+          "query": 102,
+          "target": 21941,
+          "prediction": 434,
+          "loss": 12.964728355407715
+        },
+        {
+          "row": 22,
+          "pair": 3,
+          "query": 111,
+          "target": 49530,
+          "prediction": 380,
+          "loss": 16.063373565673828
+        },
+        {
+          "row": 23,
+          "pair": 1,
+          "query": 90,
+          "target": 40585,
+          "prediction": 348,
+          "loss": 24.378597259521484
+        },
+        {
+          "row": 23,
+          "pair": 2,
+          "query": 94,
+          "target": 28647,
+          "prediction": 1010,
+          "loss": 17.114870071411133
+        },
+        {
+          "row": 23,
+          "pair": 0,
+          "query": 102,
+          "target": 17722,
+          "prediction": 15,
+          "loss": 13.47603702545166
+        },
+        {
+          "row": 23,
+          "pair": 3,
+          "query": 106,
+          "target": 1010,
+          "prediction": 17722,
+          "loss": 8.682782173156738
+        },
+        {
+          "row": 24,
+          "pair": 2,
+          "query": 102,
+          "target": 13329,
+          "prediction": 27,
+          "loss": 14.390623092651367
+        },
+        {
+          "row": 24,
+          "pair": 1,
+          "query": 112,
+          "target": 45900,
+          "prediction": 34419,
+          "loss": 15.559244155883789
+        },
+        {
+          "row": 24,
+          "pair": 3,
+          "query": 120,
+          "target": 43456,
+          "prediction": 19546,
+          "loss": 11.198862075805664
+        },
+        {
+          "row": 24,
+          "pair": 0,
+          "query": 128,
+          "target": 19546,
+          "prediction": 562,
+          "loss": 13.383936882019043
+        },
+        {
+          "row": 25,
+          "pair": 3,
+          "query": 81,
+          "target": 37597,
+          "prediction": 39798,
+          "loss": 20.12491226196289
+        },
+        {
+          "row": 25,
+          "pair": 1,
+          "query": 92,
+          "target": 5194,
+          "prediction": 15,
+          "loss": 12.246709823608398
+        },
+        {
+          "row": 25,
+          "pair": 0,
+          "query": 98,
+          "target": 39798,
+          "prediction": 15,
+          "loss": 17.23915672302246
+        },
+        {
+          "row": 25,
+          "pair": 2,
+          "query": 102,
+          "target": 30289,
+          "prediction": 37597,
+          "loss": 10.822522163391113
+        },
+        {
+          "row": 26,
+          "pair": 3,
+          "query": 89,
+          "target": 20223,
+          "prediction": 31034,
+          "loss": 16.082109451293945
+        },
+        {
+          "row": 26,
+          "pair": 2,
+          "query": 95,
+          "target": 5104,
+          "prediction": 445,
+          "loss": 12.03169059753418
+        },
+        {
+          "row": 26,
+          "pair": 0,
+          "query": 103,
+          "target": 31034,
+          "prediction": 13,
+          "loss": 14.905141830444336
+        },
+        {
+          "row": 26,
+          "pair": 1,
+          "query": 114,
+          "target": 22200,
+          "prediction": 5104,
+          "loss": 24.134904861450195
+        },
+        {
+          "row": 27,
+          "pair": 2,
+          "query": 81,
+          "target": 40411,
+          "prediction": 15,
+          "loss": 16.352718353271484
+        },
+        {
+          "row": 27,
+          "pair": 3,
+          "query": 85,
+          "target": 8085,
+          "prediction": 2388,
+          "loss": 15.415695190429688
+        },
+        {
+          "row": 27,
+          "pair": 1,
+          "query": 88,
+          "target": 25184,
+          "prediction": 13,
+          "loss": 14.94826889038086
+        },
+        {
+          "row": 27,
+          "pair": 0,
+          "query": 91,
+          "target": 2388,
+          "prediction": 25184,
+          "loss": 12.705463409423828
+        },
+        {
+          "row": 28,
+          "pair": 0,
+          "query": 93,
+          "target": 34538,
+          "prediction": 187,
+          "loss": 10.93863296508789
+        },
+        {
+          "row": 28,
+          "pair": 1,
+          "query": 96,
+          "target": 42477,
+          "prediction": 1020,
+          "loss": 15.314191818237305
+        },
+        {
+          "row": 28,
+          "pair": 3,
+          "query": 103,
+          "target": 11530,
+          "prediction": 15,
+          "loss": 12.680935859680176
+        },
+        {
+          "row": 28,
+          "pair": 2,
+          "query": 112,
+          "target": 13645,
+          "prediction": 11530,
+          "loss": 15.932731628417969
+        },
+        {
+          "row": 29,
+          "pair": 0,
+          "query": 85,
+          "target": 25152,
+          "prediction": 15,
+          "loss": 10.124275207519531
+        },
+        {
+          "row": 29,
+          "pair": 1,
+          "query": 96,
+          "target": 34236,
+          "prediction": 25734,
+          "loss": 15.264184951782227
+        },
+        {
+          "row": 29,
+          "pair": 3,
+          "query": 99,
+          "target": 5697,
+          "prediction": 15,
+          "loss": 12.574974060058594
+        },
+        {
+          "row": 29,
+          "pair": 2,
+          "query": 102,
+          "target": 25734,
+          "prediction": 15,
+          "loss": 14.751516342163086
+        },
+        {
+          "row": 30,
+          "pair": 0,
+          "query": 97,
+          "target": 22556,
+          "prediction": 434,
+          "loss": 11.543155670166016
+        },
+        {
+          "row": 30,
+          "pair": 3,
+          "query": 108,
+          "target": 41299,
+          "prediction": 15,
+          "loss": 17.8140811920166
+        },
+        {
+          "row": 30,
+          "pair": 1,
+          "query": 114,
+          "target": 45290,
+          "prediction": 23706,
+          "loss": 15.668611526489258
+        },
+        {
+          "row": 30,
+          "pair": 2,
+          "query": 123,
+          "target": 23706,
+          "prediction": 13,
+          "loss": 13.299215316772461
+        },
+        {
+          "row": 31,
+          "pair": 2,
+          "query": 103,
+          "target": 30449,
+          "prediction": 239,
+          "loss": 14.130138397216797
+        },
+        {
+          "row": 31,
+          "pair": 1,
+          "query": 106,
+          "target": 3107,
+          "prediction": 10,
+          "loss": 15.043338775634766
+        },
+        {
+          "row": 31,
+          "pair": 0,
+          "query": 112,
+          "target": 21690,
+          "prediction": 14,
+          "loss": 12.28764533996582
+        },
+        {
+          "row": 31,
+          "pair": 3,
+          "query": 122,
+          "target": 43701,
+          "prediction": 15,
+          "loss": 13.381736755371094
+        }
+      ]
+    }
+  },
+  "ablations": [
+    {
+      "layer": 0,
+      "head": 0,
+      "loss": 5.823941230773926,
+      "delta_loss": -0.31760215759277344,
+      "top1": 0.2734375
+    },
+    {
+      "layer": 0,
+      "head": 1,
+      "loss": 6.646035194396973,
+      "delta_loss": 0.5044918060302734,
+      "top1": 0.1875
+    },
+    {
+      "layer": 0,
+      "head": 2,
+      "loss": 11.782793998718262,
+      "delta_loss": 5.6412506103515625,
+      "top1": 0.0078125
+    },
+    {
+      "layer": 0,
+      "head": 3,
+      "loss": 13.180046081542969,
+      "delta_loss": 7.0385026931762695,
+      "top1": 0.0
+    },
+    {
+      "layer": 0,
+      "head": 4,
+      "loss": 5.308759689331055,
+      "delta_loss": -0.8327836990356445,
+      "top1": 0.328125
+    },
+    {
+      "layer": 0,
+      "head": 5,
+      "loss": 5.434667587280273,
+      "delta_loss": -0.7068758010864258,
+      "top1": 0.265625
+    },
+    {
+      "layer": 0,
+      "head": 6,
+      "loss": 6.935831546783447,
+      "delta_loss": 0.794288158416748,
+      "top1": 0.1640625
+    },
+    {
+      "layer": 0,
+      "head": 7,
+      "loss": 6.3452019691467285,
+      "delta_loss": 0.2036585807800293,
+      "top1": 0.203125
+    },
+    {
+      "layer": 1,
+      "head": 0,
+      "loss": 6.083251953125,
+      "delta_loss": -0.05829143524169922,
+      "top1": 0.2265625
+    },
+    {
+      "layer": 1,
+      "head": 1,
+      "loss": 6.418520450592041,
+      "delta_loss": 0.2769770622253418,
+      "top1": 0.1953125
+    },
+    {
+      "layer": 1,
+      "head": 2,
+      "loss": 6.971398830413818,
+      "delta_loss": 0.8298554420471191,
+      "top1": 0.15625
+    },
+    {
+      "layer": 1,
+      "head": 3,
+      "loss": 6.259284973144531,
+      "delta_loss": 0.11774158477783203,
+      "top1": 0.21875
+    },
+    {
+      "layer": 1,
+      "head": 4,
+      "loss": 5.81591796875,
+      "delta_loss": -0.3256254196166992,
+      "top1": 0.265625
+    },
+    {
+      "layer": 1,
+      "head": 5,
+      "loss": 13.318435668945312,
+      "delta_loss": 7.176892280578613,
+      "top1": 0.0
+    },
+    {
+      "layer": 1,
+      "head": 6,
+      "loss": 6.048161506652832,
+      "delta_loss": -0.09338188171386719,
+      "top1": 0.21875
+    },
+    {
+      "layer": 1,
+      "head": 7,
+      "loss": 6.068018436431885,
+      "delta_loss": -0.07352495193481445,
+      "top1": 0.21875
+    }
+  ],
+  "hook_cleanup_verified": true
+}

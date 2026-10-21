@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you refer to this seminar implementation, cite the repository and the exact commit used."
+title: "Induction Heads: Recurring Pairs and Passive Circuit Tracing"
+type: software
+authors:
+  - family-names: Dvir
+    given-names: Itamar
+version: 0.1.0
+date-released: 2026-10-22
+repository-code: "https://github.com/itdv/induction-heads-reproduction"
+abstract: "A CPU-based experiment on recurring token pairs using a pretrained two-layer attention-only transformer, with input controls, head ablations and passive additive QK/OV tracing."

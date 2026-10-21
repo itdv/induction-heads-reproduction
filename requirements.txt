@@ -1,0 +1,6 @@
+# Versions used for the reference experiment (Python 3.11, CPU).
+torch==2.14.0
+transformer-lens==2.15.0
+transformers==4.51.3
+huggingface-hub==0.36.2
+pytest==9.1.1
