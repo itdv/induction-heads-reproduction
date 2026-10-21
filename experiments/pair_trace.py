@@ -4,6 +4,8 @@ QK terms are contributions to pre-softmax scores, not additive attention probabi
 Logit terms are direct contributions, not causal effects or probabilities.
 The algebra is restricted to the architecture checked in pair_model.validate_model.
 """
+from dataclasses import dataclass
+
 import torch
 
 
@@ -52,64 +54,156 @@ def mean_groups(values, matching):
 
 @torch.no_grad()
 def trace_key_composition(model, cache, data, previous_head, induction_head):
-    """Reconstruct every selected QK score, including embeddings, positions and biases."""
+    """Trace early-head -> late-key contributions in the original forward pass.
+
+    The steps below only organize the analysis. Each calculation has its own
+    function so that selecting positions, tracing information and writing the
+    report can be read separately.
+    """
     edges = edge_indices(data)
-    rows = torch.tensor([edge['row'] for edge in edges])
-    queries = torch.tensor([edge['query'] for edge in edges])
-    sources = torch.tensor([edge['source'] for edge in edges])
-    matching = torch.tensor([edge['matching'] for edge in edges])
-    components = early_components(model, cache)
-    q_parts = project_components(components, rows, queries,
-                                 model.W_Q[1, induction_head], model.b_Q[1, induction_head])
-    k_parts = project_components(components, rows, sources,
-                                 model.W_K[1, induction_head], model.b_K[1, induction_head])
-    actual_q = cache['blocks.1.attn.hook_q'][rows, queries, induction_head]
-    actual_k = cache['blocks.1.attn.hook_k'][rows, sources, induction_head]
-    q_sum, k_sum = stack_components(q_parts).sum(1), stack_components(k_parts).sum(1)
-    torch.testing.assert_close(q_sum, actual_q, atol=3e-4, rtol=3e-4)
-    torch.testing.assert_close(k_sum, actual_k, atol=3e-4, rtol=3e-4)
+    positions = edge_positions(edges)
+    qk = decompose_qk(model, cache, positions, induction_head)
     scale = model.blocks[1].attn.attn_scale
-    score_terms = torch.einsum('eid,ejd->eij', stack_components(q_parts), stack_components(k_parts)) / scale
-    actual_scores = (actual_q * actual_k).sum(-1) / scale
-    torch.testing.assert_close(score_terms.sum((1, 2)), actual_scores, atol=3e-4, rtol=3e-4)
-    recorded_scores = cache['blocks.1.attn.hook_attn_scores'][rows, induction_head, queries, sources]
-    torch.testing.assert_close(actual_scores, recorded_scores, atol=3e-4, rtol=3e-4)
 
-    # Keep the actual full Q fixed. These K-component scores sum to the full score.
-    key_terms = (stack_components(k_parts) * actual_q[:, None]).sum(-1) / scale
-    selected_key = key_terms[:, list(k_parts).index(f'L0H{previous_head}')]
+    key_scores = score_key_components(qk['query'], qk['key_parts'], scale)
+    head_column = list(qk['key_parts']).index(f'L0H{previous_head}')
+    selected_head_scores = key_scores[:, head_column]
 
-    # Isolate the actual earlier head edge (A -> following B), including its V bias.
-    previous_attention = cache['blocks.0.attn.hook_pattern'][rows, previous_head, sources, sources - 1]
-    previous_v = cache['blocks.0.attn.hook_v'][rows, sources - 1, previous_head]
-    edge_write = previous_attention[:, None] * (previous_v @ model.W_O[0, previous_head])
-    edge_key = edge_write @ model.W_K[1, induction_head]
-    edge_key_score = (actual_q * edge_key).sum(-1) / scale
+    previous_token = trace_previous_token(
+        model, cache, data, positions, qk['query'], previous_head, induction_head)
 
-    # The content-only part excludes b_V, rather than calling all of the V vector "A".
-    previous_tokens = data.tokens[rows, sources - 1]
-    content_v = model.W_E[previous_tokens] @ model.W_V[0, previous_head]
-    content_write = previous_attention[:, None] * (content_v @ model.W_O[0, previous_head])
-    content_score = (actual_q * (content_write @ model.W_K[1, induction_head])).sum(-1) / scale
+    add_edge_measurements(
+        edges, cache, positions, induction_head,
+        qk['scores'], selected_head_scores, previous_token)
+    return summarize_key_trace(edges, positions.matching, qk, key_scores, previous_token)
+
+
+@dataclass(frozen=True)
+class EdgePositions:
+    """Parallel index tensors: one row per query-to-source edge being analyzed."""
+    rows: torch.Tensor
+    queries: torch.Tensor
+    sources: torch.Tensor
+    matching: torch.Tensor
+
+
+def edge_positions(edges):
+    """Convert the recorded edge locations to batch indices for the cached tensors."""
+    return EdgePositions(
+        rows=torch.tensor([edge['row'] for edge in edges]),
+        queries=torch.tensor([edge['query'] for edge in edges]),
+        sources=torch.tensor([edge['source'] for edge in edges]),
+        matching=torch.tensor([edge['matching'] for edge in edges]),
+    )
+
+
+def reconstruction_error(reconstructed, observed):
+    """Check our decomposition, then report its largest numerical discrepancy."""
+    torch.testing.assert_close(reconstructed, observed, atol=3e-4, rtol=3e-4)
+    return float((reconstructed - observed).abs().max())
+
+
+def project_qk_components(model, cache, positions, head):
+    """Apply W_Q and W_K separately to each input contribution, including biases."""
+    components = early_components(model, cache)
+    query_parts = project_components(
+        components, positions.rows, positions.queries, model.W_Q[1, head], model.b_Q[1, head])
+    key_parts = project_components(
+        components, positions.rows, positions.sources, model.W_K[1, head], model.b_K[1, head])
+    return query_parts, key_parts
+
+
+def decompose_qk(model, cache, positions, head):
+    """Read actual Q/K, decompose them, and verify all Q-part x K-part scores."""
+    query = cache['blocks.1.attn.hook_q'][positions.rows, positions.queries, head]
+    key = cache['blocks.1.attn.hook_k'][positions.rows, positions.sources, head]
+    recorded_scores = cache['blocks.1.attn.hook_attn_scores'][
+        positions.rows, head, positions.queries, positions.sources]
+    query_parts, key_parts = project_qk_components(model, cache, positions, head)
+    scale = model.blocks[1].attn.attn_scale
+    score_terms = qk_cross_terms(query_parts, key_parts, scale)
+    scores = matching_score(query, key, scale)
+    errors = {
+        'q_max_reconstruction_error':reconstruction_error(stack_components(query_parts).sum(1), query),
+        'k_max_reconstruction_error':reconstruction_error(stack_components(key_parts).sum(1), key),
+        'score_max_reconstruction_error':reconstruction_error(score_terms.sum((1, 2)), scores),
+        'recorded_score_max_error':reconstruction_error(scores, recorded_scores),
+    }
+    return {'query':query, 'key_parts':key_parts, 'scores':scores,
+            'component_names':list(query_parts), 'score_terms':score_terms, 'errors':errors}
+
+
+def matching_score(query, key, scale):
+    """Scaled dot product; this is a raw score before softmax, not a probability."""
+    return (query * key).sum(-1) / scale
+
+
+def qk_cross_terms(query_parts, key_parts, scale):
+    """For each edge, multiply every Q component by every K component.
+
+    e = edge, i = Q component, j = K component, d = head dimension.
+    Summing over i and j recovers the full matching score.
+    """
+    return torch.einsum(
+        'eid,ejd->eij', stack_components(query_parts), stack_components(key_parts)) / scale
+
+
+def score_key_components(query, key_parts, scale):
+    """Hold the actual full Q fixed and score each contribution to K separately."""
+    return matching_score(query[:, None], stack_components(key_parts), scale)
+
+
+def previous_token_writes(model, cache, data, positions, head):
+    """Separate the early head's preceding-token write from its other source reads.
+
+    Return both the cached V path (including b_V) and the embedding-only path.
+    """
+    rows, sources = positions.rows, positions.sources
+    attention = cache['blocks.0.attn.hook_pattern'][rows, head, sources, sources - 1]
+    value = cache['blocks.0.attn.hook_v'][rows, sources - 1, head]
+    write = attention[:, None] * (value @ model.W_O[0, head])
+
+    token_ids = data.tokens[rows, sources - 1]
+    content_value = model.W_E[token_ids] @ model.W_V[0, head]
+    content_write = attention[:, None] * (content_value @ model.W_O[0, head])
+    return attention, write, content_write
+
+
+def trace_previous_token(model, cache, data, positions, query, early_head, late_head):
+    """Follow previous token -> early-head write -> late key -> matching score."""
+    attention, write, content_write = previous_token_writes(
+        model, cache, data, positions, early_head)
+    key_weight = model.W_K[1, late_head]
+    scale = model.blocks[1].attn.attn_scale
+    key_contribution = write @ key_weight
+    content_key_contribution = content_write @ key_weight
+    return {'attention':attention,
+            'edge_score':matching_score(query, key_contribution, scale),
+            'content_score':matching_score(query, content_key_contribution, scale)}
+
+
+def add_edge_measurements(edges, cache, positions, head, scores, head_scores, previous_token):
+    """Attach numbers to each recorded edge; no model calculations happen here."""
+    late_attention = cache['blocks.1.attn.hook_pattern'][
+        positions.rows, head, positions.queries, positions.sources]
     for i, edge in enumerate(edges):
-        edge.update(total_qk_score=float(actual_scores[i]),
-                    early_head_key_score=float(selected_key[i]),
-                    previous_token_edge_key_score=float(edge_key_score[i]),
-                    previous_token_content_key_score=float(content_score[i]),
-                    early_previous_attention=float(previous_attention[i]),
-                    late_attention=float(cache['blocks.1.attn.hook_pattern'][rows[i], induction_head, queries[i], sources[i]]))
-    report = {'component_names':list(q_parts),
-              'q_max_reconstruction_error':float((q_sum - actual_q).abs().max()),
-              'k_max_reconstruction_error':float((k_sum - actual_k).abs().max()),
-              'score_max_reconstruction_error':float((score_terms.sum((1, 2)) - actual_scores).abs().max()),
-              'recorded_score_max_error':float((actual_scores - recorded_scores).abs().max()),
-              'full_qk_scores':mean_groups(actual_scores, matching),
-              'qk_component_matrix':mean_groups(score_terms, matching),
-              'key_component_scores_with_actual_q':mean_groups(key_terms, matching),
-              'previous_token_edge_key_score':mean_groups(edge_key_score, matching),
-              'previous_token_content_key_score':mean_groups(content_score, matching),
-              'edges':edges}
-    return report
+        edge.update(total_qk_score=float(scores[i]),
+                    early_head_key_score=float(head_scores[i]),
+                    previous_token_edge_key_score=float(previous_token['edge_score'][i]),
+                    previous_token_content_key_score=float(previous_token['content_score'][i]),
+                    early_previous_attention=float(previous_token['attention'][i]),
+                    late_attention=float(late_attention[i]))
+
+
+def summarize_key_trace(edges, matching, qk, key_scores, previous_token):
+    """Preserve the report schema and compare matching sources with other pairs."""
+    return {'component_names':qk['component_names'], **qk['errors'],
+            'full_qk_scores':mean_groups(qk['scores'], matching),
+            'qk_component_matrix':mean_groups(qk['score_terms'], matching),
+            'key_component_scores_with_actual_q':mean_groups(key_scores, matching),
+            'previous_token_edge_key_score':mean_groups(previous_token['edge_score'], matching),
+            'previous_token_content_key_score':mean_groups(previous_token['content_score'], matching),
+            'edges':edges}
 
 
 def trace_matching_values(model, cache, data, induction_head, expected_write, gold_direction, margin_direction):

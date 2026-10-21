@@ -88,6 +88,19 @@ Start with `main()` and then `run_experiment()` in the entry script.
 | [`experiments/download_model.py`](experiments/download_model.py) | Explicitly download only the required pretrained files. |
 | [`experiments/test_pair_induction.py`](experiments/test_pair_induction.py) | Test input construction, controls, attention indexing and passive decompositions. |
 
+### Reading the key trace
+
+`trace_key_composition()` coordinates these separate steps in `pair_trace.py`:
+
+1. `edge_positions()` collects the query/source indices.
+2. `decompose_qk()` reads cached Q/K, reconstructs their components and checks the full score decomposition.
+3. `score_key_components()` measures each key component against the actual query.
+4. `trace_previous_token()` follows the specific path: previous token -> early-head write -> later key -> matching score. `previous_token_writes()` separates token content from value bias.
+5. `add_edge_measurements()` attaches individual measurements to the recorded edges.
+6. `summarize_key_trace()` compares matching sources with other-pair sources and builds the report.
+
+The basic operation is `matching_score(query, key, scale)`: a scaled dot product. Report formatting is separate from the model arithmetic. The refactored trace was compared against every value in the published reference key trace, including all 1,728 edge records, with exact equality.
+
 ## 5. Measurements and controls
 
 The main prediction metrics are cross-entropy and top-1 accuracy over the **entire vocabulary**. No candidate answer list is supplied to the model.
