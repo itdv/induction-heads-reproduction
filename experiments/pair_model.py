@@ -59,6 +59,7 @@ def read_run(model: HookedTransformer, data: PairBatch) -> ActivationCache:
     names = (
         "hook_embed", "hook_pos_embed", "attn.hook_pattern", "attn.hook_q",
         "attn.hook_k", "attn.hook_v", "attn.hook_z", "attn.hook_attn_scores",
+        "hook_resid_post",
     )
     _, cache = model.run_with_cache(
         data.tokens, return_type=None,

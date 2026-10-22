@@ -15,7 +15,10 @@ import torch
 
 from pair_config import ROOT, MODEL, REVISION, TOKENIZER, TOKENIZER_REVISION
 from pair_data import PairBatch, make_pair_batch
-from pair_measurements import AttentionScores, SelectedHeads, measure_attention, select_heads
+from pair_measurements import (
+    AttentionScores, PredictionScores, SelectedHeads,
+    measure_attention, measure_predictions, select_heads,
+)
 from pair_model import load_model, read_run
 from pair_trace import RunTrace, trace_run
 
@@ -27,6 +30,7 @@ class ExperimentReport(TypedDict):
     selected_heads: SelectedHeads
     query_count: int
     attention: list[AttentionScores]
+    predictions: PredictionScores
     trace: RunTrace
 
 
@@ -53,8 +57,6 @@ def parse_settings() -> Settings:
     settings = Settings(**vars(parser.parse_args()))
     if settings.threads < 1:
         parser.error("--threads must be positive")
-    if settings.pairs < 2:
-        parser.error("--pairs must be at least 2 for output tracing")
     return settings
 
 
@@ -82,6 +84,7 @@ def run_experiment(
         "selected_heads": selected,
         "query_count": len(data.last_occurrences()),
         "attention": attention,
+        "predictions": measure_predictions(model, cache, data),
         "trace": trace,
     }
     return report, data.to_dict()
@@ -95,11 +98,14 @@ def write_summary(path: Path, report: ExperimentReport) -> None:
     selected = report["selected_heads"]
     early, late = selected["early_head"], selected["late_head"]
     attention = report["attention"][1]
+    predictions = report["predictions"]
     lines = [
         "# Information flow in the actual run",
         "",
         f"Selected heads: L0H{early} and L1H{late}.",
         f"Queries: {report['query_count']}.",
+        f"Correct top-1 predictions: {predictions['correct']}/{predictions['total']}.",
+        f"Mean probability of B: {predictions['mean_target_probability']:.4f}.",
         f"Matching-source attention: {attention['matching_source_mass'][late]:.4f}.",
         f"Top source match rate: {attention['top_source_match_rate'][late]:.4f}.",
         "",
@@ -127,20 +133,29 @@ def write_summary(path: Path, report: ExperimentReport) -> None:
         "",
         "## Output contributions",
         "",
-        "A margin is the target logit minus the mean logit of the other pair values.",
-        "These are direct contributions from the selected late head, not prediction accuracy.",
+        "All contributions below are to B's raw logit. No other-token baseline is used.",
+        "The prediction check above uses the full vocabulary; logit contributions are not probabilities.",
         "",
-        f"Selected head margin: {output['head_margin']:.4f}.",
-        f"From matching sources: {output['matching_sources_margin']:.4f}.",
-        f"From all other sources: {output['other_sources_margin']:.4f}.",
+        f"Full model target logit: {output['target_logit']:.4f}.",
+        f"Selected head contribution: {output['head_logit']:.4f}.",
+        f"From matching sources: {output['matching_sources_logit']:.4f}.",
+        f"From all other sources: {output['other_sources_logit']:.4f}.",
         "",
-        "| Value component within matching sources | Margin contribution |",
+        "| Model component | Contribution to B's logit |",
         "|---|---:|",
     ])
-    for name, margin in output["matching_value_parts"].items():
-        lines.append(f"| {name} | {margin:.4f} |")
+    for name, logit in output["model_logit_parts"].items():
+        lines.append(f"| {name} | {logit:.4f} |")
+    lines.extend([
+        "",
+        "| Value component within matching sources | Contribution to B's logit |",
+        "|---|---:|",
+    ])
+    for name, logit in output["matching_value_parts"].items():
+        lines.append(f"| {name} | {logit:.4f} |")
     errors = [keys["key_reconstruction_error"], keys["score_reconstruction_error"],
-              output["value_reconstruction_error"], output["head_reconstruction_error"]]
+              output["value_reconstruction_error"], output["head_reconstruction_error"],
+              output["logit_reconstruction_error"]]
     lines.extend([
         "",
         f"Largest reconstruction error: {max(errors):.8f}.",

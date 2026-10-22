@@ -72,6 +72,7 @@ def test_head_selection_uses_the_right_layer_and_score():
 def test_run_cache_matches_a_normal_forward_pass():
     from transformer_lens import HookedTransformer, HookedTransformerConfig
     from pair_model import read_run
+    from pair_measurements import measure_predictions
 
     config = HookedTransformerConfig(
         n_layers=2, d_model=16, n_heads=2, d_head=8, n_ctx=256,
@@ -82,7 +83,15 @@ def test_run_cache_matches_a_normal_forward_pass():
     data = make_pair_batch(200, 0, [0], batch=2, pairs=2, repeats=3, seed=3)
     cache = read_run(model, data)
     with torch.no_grad():
-        _, full_cache = model.run_with_cache(data.tokens)
+        logits, full_cache = model.run_with_cache(data.tokens)
 
     for name, value in cache.items():
         torch.testing.assert_close(value, full_cache[name])
+
+    predictions = measure_predictions(model, cache, data)
+    for record in predictions["queries"]:
+        scores = logits[record["row"], record["position"]]
+        assert record["predicted"] == int(scores.argmax())
+        assert record["target_probability"] == pytest.approx(
+            float(scores.softmax(-1)[record["target"]]), abs=1e-6,
+        )

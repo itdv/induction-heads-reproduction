@@ -45,14 +45,17 @@ class KeyTrace(TypedDict):
 
 
 class OutputTrace(TypedDict):
-    head_margin: float
-    matching_sources_margin: float
-    other_sources_margin: float
+    target_logit: float
+    model_logit_parts: dict[str, float]
+    head_logit: float
+    matching_sources_logit: float
+    other_sources_logit: float
     matching_value_parts: dict[str, float]
     value_reconstruction_error: float
     head_reconstruction_error: float
-    query_head_margins: list[float]
-    query_matching_source_margins: list[float]
+    logit_reconstruction_error: float
+    query_head_logits: list[float]
+    query_matching_source_logits: list[float]
 
 
 class RunTrace(TypedDict):
@@ -182,14 +185,8 @@ def trace_output(
     positions = torch.tensor([event.trigger_position for event in events])
     targets = torch.tensor([event.target_token for event in events])
 
-    # Score support for the target relative to the other pair values in this context.
-    other_tokens = torch.tensor([
-        [target for pair, (_, target) in enumerate(data.pairs[event.sequence_index])
-         if pair != event.pair_index] for event in events
-    ])
-    if other_tokens.shape[1] == 0:
-        raise ValueError("Output tracing needs at least two pairs.")
-    direction = model.W_U[:, targets].T - model.W_U[:, other_tokens].mean(2).T
+    # A write dotted with this vector gives its contribution to B's logit.
+    target_direction = model.W_U[:, targets].T
 
     attention = cache["pattern", 1][rows, late_head, positions]
     values = cache["v", 1][rows, :, late_head]
@@ -198,6 +195,21 @@ def trace_output(
     head_write = cached_z @ model.W_O[1, late_head]
 
     inputs = early_writes(model, cache)
+
+    # Account for the full target logit, so the selected head has context.
+    model_parts = {
+        name: (stream[rows, positions] * target_direction).sum(-1)
+        for name, stream in inputs.items()
+    }
+    for head in range(model.cfg.n_heads):
+        write = cache["z", 1][rows, positions, head] @ model.W_O[1, head]
+        model_parts[f"L1H{head}"] = (write * target_direction).sum(-1)
+    model_parts["late_output_bias"] = (model.b_O[1] * target_direction).sum(-1)
+    model_parts["unembedding_bias"] = model.b_U[targets]
+    residual = cache["resid_post", 1][rows, positions]
+    target_logit = (residual * target_direction).sum(-1) + model.b_U[targets]
+    logit_error = check_sum(torch.stack(list(model_parts.values())).sum(0), target_logit)
+
     matching_writes = []
     value_parts: dict[str, list[torch.Tensor]] = {name: [] for name in inputs}
     value_parts["value_bias"] = []
@@ -219,19 +231,22 @@ def trace_output(
     matching_write = torch.stack(matching_writes)
     parts = {name: torch.stack(writes) for name, writes in value_parts.items()}
     value_error = check_sum(torch.stack(list(parts.values())).sum(0), matching_write)
-    head_margin = (head_write * direction).sum(-1)
-    matching_margin = (matching_write * direction).sum(-1)
+    head_logit = (head_write * target_direction).sum(-1)
+    matching_logit = (matching_write * target_direction).sum(-1)
     return {
-        "head_margin": float(head_margin.mean()),
-        "matching_sources_margin": float(matching_margin.mean()),
-        "other_sources_margin": float((head_margin - matching_margin).mean()),
+        "target_logit": float(target_logit.mean()),
+        "model_logit_parts": {name: float(values.mean()) for name, values in model_parts.items()},
+        "head_logit": float(head_logit.mean()),
+        "matching_sources_logit": float(matching_logit.mean()),
+        "other_sources_logit": float((head_logit - matching_logit).mean()),
         "matching_value_parts": {
-            name: float((write * direction).sum(-1).mean()) for name, write in parts.items()
+            name: float((write * target_direction).sum(-1).mean()) for name, write in parts.items()
         },
         "value_reconstruction_error": value_error,
         "head_reconstruction_error": head_error,
-        "query_head_margins": head_margin.tolist(),
-        "query_matching_source_margins": matching_margin.tolist(),
+        "logit_reconstruction_error": logit_error,
+        "query_head_logits": head_logit.tolist(),
+        "query_matching_source_logits": matching_logit.tolist(),
     }
 
 

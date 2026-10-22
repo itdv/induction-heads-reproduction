@@ -1,10 +1,15 @@
-"""Measure attention and choose candidate heads. No prediction or interventions."""
+"""Measure attention, choose heads, and check next-token predictions."""
 
-from typing import TypedDict
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, TypedDict
 
 import torch
 
 from pair_data import PairBatch
+
+if TYPE_CHECKING:
+    from transformer_lens import ActivationCache, HookedTransformer
 
 
 class AttentionScores(TypedDict):
@@ -17,6 +22,47 @@ class AttentionScores(TypedDict):
 class SelectedHeads(TypedDict):
     early_head: int
     late_head: int
+
+
+class Prediction(TypedDict):
+    row: int
+    position: int
+    target: int
+    predicted: int
+    target_probability: float
+
+
+class PredictionScores(TypedDict):
+    correct: int
+    total: int
+    mean_target_probability: float
+    queries: list[Prediction]
+
+
+@torch.no_grad()
+def measure_predictions(
+    model: HookedTransformer, cache: ActivationCache, data: PairBatch,
+) -> PredictionScores:
+    """Check B against the full vocabulary, using the same cached run."""
+    events = data.last_occurrences()
+    rows = torch.tensor([event.sequence_index for event in events])
+    positions = torch.tensor([event.trigger_position for event in events])
+    targets = torch.tensor([event.target_token for event in events])
+    residual = cache["resid_post", 1][rows, positions]
+    logits = residual @ model.W_U + model.b_U
+    predicted = logits.argmax(-1)
+    probabilities = logits.softmax(-1).gather(1, targets[:, None]).squeeze(1)
+    return {
+        "correct": int((predicted == targets).sum()),
+        "total": len(events),
+        "mean_target_probability": float(probabilities.mean()),
+        "queries": [
+            {"row": event.sequence_index, "position": event.trigger_position,
+             "target": event.target_token, "predicted": int(predicted[i]),
+             "target_probability": float(probabilities[i])}
+            for i, event in enumerate(events)
+        ],
+    }
 
 
 def measure_attention(
