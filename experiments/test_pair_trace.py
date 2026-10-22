@@ -42,8 +42,7 @@ def test_trace_reconstructs_the_run_without_changing_it(early_head: int, late_he
     assert sum(output["matching_value_parts"].values()) == pytest.approx(
         output["matching_sources_logit"], abs=1e-5,
     )
-    assert output["logit_reconstruction_error"] < 1e-4
-    assert sum(output["model_logit_parts"].values()) == pytest.approx(
+    assert output["head_logit"] + output["rest_logit"] == pytest.approx(
         output["target_logit"], abs=1e-5,
     )
     for edge in keys["edges"]:

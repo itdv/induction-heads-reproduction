@@ -64,16 +64,21 @@ Within matching sources, split V into the token embedding, early-head writes and
 biases. Shortformer positions are not added to V.
 
 Project each write onto B's unembedding vector to get its direct contribution
-to B's raw logit. There is no comparison with the other pair values. The report
-also splits the full B logit by model component, so the selected head can be
-compared with the other heads, embeddings and biases.
+to B's raw logit. There is no comparison with the other pair values. Read the
+full B logit from the final cached residual and subtract the selected head's
+contribution to get everything else together. No loop over the other late heads
+is needed for this comparison.
+
+The summary also shows signed percentages: mean contribution divided by mean
+total logit. These may be negative or exceed 100%, and are undefined when the
+mean total is zero. They are not probability shares or positive-support shares.
 
 Separately, use the cached final residual to compute next-token probabilities
 over the full vocabulary. Report whether B is the top prediction and its probability
 for each query. This uses the same run, without another transformer forward pass.
 
 The code checks that the pieces sum back to the cached K, attention scores, Z
-and matching-source write, as well as the full B logit. No activation is removed or changed. These are additive
+and matching-source write. No activation is removed or changed. These are additive
 contributions in the observed run, not intervention effects or a full proof of causality.
 
 This decomposition needs two attention-only layers, no normalization, and

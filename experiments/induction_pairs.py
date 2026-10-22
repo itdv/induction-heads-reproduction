@@ -127,6 +127,9 @@ def write_summary(path: Path, report: ExperimentReport) -> None:
         difference_text = "n/a" if difference is None else f"{difference:.4f}"
         lines.append(f"| {name} | {scores['matching']:.4f} | {other_text} | {difference_text} |")
     output = report["trace"]["output"]
+    total = output["target_logit"]
+    head_percent = f"{100 * output['head_logit'] / total:.1f}%" if total != 0 else "n/a"
+    rest_percent = f"{100 * output['rest_logit'] / total:.1f}%" if total != 0 else "n/a"
     lines.extend([
         "",
         "The preceding-token row is part of the early-head row; do not add it again.",
@@ -136,16 +139,18 @@ def write_summary(path: Path, report: ExperimentReport) -> None:
         "All contributions below are to B's raw logit. No other-token baseline is used.",
         "The prediction check above uses the full vocabulary; logit contributions are not probabilities.",
         "",
-        f"Full model target logit: {output['target_logit']:.4f}.",
-        f"Selected head contribution: {output['head_logit']:.4f}.",
+        "| Component | Mean contribution to B's logit | Percent of mean total |",
+        "|---|---:|---:|",
+        f"| Full model | {total:.4f} | {'100%' if total != 0 else 'n/a'} |",
+        f"| Selected head | {output['head_logit']:.4f} | {head_percent} |",
+        f"| Everything else | {output['rest_logit']:.4f} | {rest_percent} |",
+        "",
+        "Percentages are signed ratios of means, not probabilities or positive-support shares.",
+        "They can be negative or exceed 100%; they are undefined when the mean total is zero.",
+        "",
         f"From matching sources: {output['matching_sources_logit']:.4f}.",
         f"From all other sources: {output['other_sources_logit']:.4f}.",
-        "",
-        "| Model component | Contribution to B's logit |",
-        "|---|---:|",
     ])
-    for name, logit in output["model_logit_parts"].items():
-        lines.append(f"| {name} | {logit:.4f} |")
     lines.extend([
         "",
         "| Value component within matching sources | Contribution to B's logit |",
@@ -154,8 +159,7 @@ def write_summary(path: Path, report: ExperimentReport) -> None:
     for name, logit in output["matching_value_parts"].items():
         lines.append(f"| {name} | {logit:.4f} |")
     errors = [keys["key_reconstruction_error"], keys["score_reconstruction_error"],
-              output["value_reconstruction_error"], output["head_reconstruction_error"],
-              output["logit_reconstruction_error"]]
+              output["value_reconstruction_error"], output["head_reconstruction_error"]]
     lines.extend([
         "",
         f"Largest reconstruction error: {max(errors):.8f}.",

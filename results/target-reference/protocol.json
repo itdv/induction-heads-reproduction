@@ -14,5 +14,6 @@
     "output": "work/induction/target-logit-01"
   },
   "training": false,
-  "analysis": "Additive key and output contributions in the actual cached run"
+  "analysis": "Additive key and output contributions in the actual cached run",
+  "record_note": "Head-versus-rest report derived from the saved target-logit-01 results; no new model run."
 }

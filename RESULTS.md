@@ -36,23 +36,27 @@ other pair values or any other-token baseline.
 |---|---:|
 | Full model B logit | 5.9779 |
 | L1H5 | 7.5742 |
+| Everything else together | -1.5963 |
 | Within L1H5: matching sources | 7.5288 |
 | Within L1H5: all other sources | 0.0454 |
 | Within matching sources: token embedding | 4.5476 |
 | Within matching sources: L0H2 writes | 3.0524 |
 
-L1H5 is the largest positive contributor on average. Negative components, notably
-the final layer's output bias (-2.4915), make the full logit smaller than L1H5's
-contribution. Do not interpret contributions as percentages of probability.
+The selected head contributes 126.7% of the mean total logit; everything else
+contributes -26.7%. These are signed ratios of means, not probability shares.
+Ratios can exceed 100% because other components reduce the total. They are
+undefined when the mean total is zero. No positive-support denominator is used.
 
 The source and value rows are nested parts, not extra terms to add to the full head.
-All model-component contributions are included in the saved report, along with
-per-query predictions and selected-head contributions.
+The report keeps only the head-versus-rest comparison, along with per-query
+predictions and selected-head contributions. It does not loop over other late
+heads to split their contributions. Existing saved results were reformatted;
+the pretrained model was not run again for this simplification.
 
 ## Verification and files
 
 The largest reconstruction error is 0.00000572. Six tests passed, including
-nonzero biases, full-logit reconstruction, prediction checks against a normal
+nonzero biases, prediction checks against a normal
 forward pass, and unchanged cache/weights.
 
 - [Readable tables](results/target-reference/summary.md).

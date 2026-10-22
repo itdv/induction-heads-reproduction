@@ -36,33 +36,17 @@ The preceding-token row is part of the early-head row; do not add it again.
 All contributions below are to B's raw logit. No other-token baseline is used.
 The prediction check above uses the full vocabulary; logit contributions are not probabilities.
 
-Full model target logit: 5.9779.
-Selected head contribution: 7.5742.
+| Component | Mean contribution to B's logit | Percent of mean total |
+|---|---:|---:|
+| Full model | 5.9779 | 100% |
+| Selected head | 7.5742 | 126.7% |
+| Everything else | -1.5963 | -26.7% |
+
+Percentages are signed ratios of means, not probabilities or positive-support shares.
+They can be negative or exceed 100%; they are undefined when the mean total is zero.
+
 From matching sources: 7.5288.
 From all other sources: 0.0454.
-
-| Model component | Contribution to B's logit |
-|---|---:|
-| token_embedding | -0.0670 |
-| early_output_bias | -0.1324 |
-| L0H0 | -0.0119 |
-| L0H1 | 0.0119 |
-| L0H2 | 0.0254 |
-| L0H3 | -0.0114 |
-| L0H4 | -0.0008 |
-| L0H5 | -0.0487 |
-| L0H6 | 0.0790 |
-| L0H7 | -0.0091 |
-| L1H0 | -0.0111 |
-| L1H1 | 0.3533 |
-| L1H2 | 0.6890 |
-| L1H3 | 0.1183 |
-| L1H4 | -0.0341 |
-| L1H5 | 7.5742 |
-| L1H6 | 0.0400 |
-| L1H7 | -0.0104 |
-| late_output_bias | -2.4915 |
-| unembedding_bias | -0.0850 |
 
 | Value component within matching sources | Contribution to B's logit |
 |---|---:|
