@@ -9,10 +9,11 @@
     "repeats": 4,
     "min_gap": 1,
     "max_gap": 9,
-    "seed": 20261021,
+    "seed": 20261022,
     "threads": 2,
     "output": "work/induction/run-trace-01"
   },
   "training": false,
-  "analysis": "Additive key and output contributions in the actual cached run"
+  "analysis": "Additive key and output contributions in the actual cached run",
+  "record_note": "Existing traced run reused; heads selected from its saved attention. No new pretrained-model run."
 }

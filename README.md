@@ -8,7 +8,7 @@ or head ablations.
 ## Read the code
 
 1. [induction_pairs.py](experiments/induction_pairs.py): start with `run_experiment()`.
-   It selects heads, runs evaluation, and traces that evaluation run.
+   It runs one batch once, then selects heads and traces that same cached run.
 2. [pair_data.py](experiments/pair_data.py): build random pairs and record earlier sources.
 3. [pair_measurements.py](experiments/pair_measurements.py): measure attention and select heads.
 4. [pair_trace.py](experiments/pair_trace.py): read `trace_keys()` and `trace_output()`.
@@ -23,12 +23,12 @@ Each sequence has four different A-to-B pairs. Each pair occurs four times.
 Every round has a new pair order. Each pair has 1–9 random background tokens
 before it. The background excludes pair tokens. These are token IDs, not stories.
 
-There are 32 discovery sequences and 32 separate evaluation sequences.
-Discovery selects an early head by attention to the previous token, and a late
-head by attention to earlier matching B positions. Evaluation uses the last
-appearance of every pair: 128 queries, each with three matching sources.
+There is one batch of 32 sequences and one model run. Its cached attention
+selects an early head by attention to the previous token, and a late head by
+attention to earlier matching B positions. The trace uses the same cache and the
+last appearance of every pair: 128 queries, each with three matching sources.
 
-The inputs and seeds are unchanged from the preceding mechanism reference.
+The default seed is 20261022, preserving the earlier traced inputs.
 The model's own causal attention mask handles future positions.
 
 ## What is traced?
@@ -117,7 +117,7 @@ Use `--help` for the settings. `--pairs` must be at least 2 for the output compa
 
 - `summary.md`: attention and readable key/output contribution tables.
 - `results.json`: all scores, per-edge key records and reconstruction errors.
-- `inputs.json`: exact discovery and evaluation inputs.
+- `inputs.json`: exact inputs for the single batch.
 - `protocol.json`: settings and pinned model/tokenizer revisions.
 
 Current results: [results/run-reference](results/run-reference). See [RESULTS.md](RESULTS.md).

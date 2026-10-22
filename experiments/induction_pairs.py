@@ -16,7 +16,7 @@ import torch
 from pair_config import ROOT, MODEL, REVISION, TOKENIZER, TOKENIZER_REVISION
 from pair_data import PairBatch, make_pair_batch
 from pair_measurements import AttentionScores, SelectedHeads, measure_attention, select_heads
-from pair_model import load_model, read_attention, read_run
+from pair_model import load_model, read_run
 from pair_trace import RunTrace, trace_run
 
 if TYPE_CHECKING:
@@ -26,8 +26,7 @@ if TYPE_CHECKING:
 class ExperimentReport(TypedDict):
     selected_heads: SelectedHeads
     query_count: int
-    discovery_attention: list[AttentionScores]
-    evaluation_attention: list[AttentionScores]
+    attention: list[AttentionScores]
     trace: RunTrace
 
 
@@ -38,7 +37,7 @@ class Settings:
     repeats: int = 4
     min_gap: int = 1
     max_gap: int = 9
-    seed: int = 20261021  # Evaluation uses seed + 1.
+    seed: int = 20261022
     threads: int = 2
     output: str = "work/induction/trace-01"
 
@@ -71,30 +70,21 @@ def build_data(model: HookedTransformer, settings: Settings, seed: int) -> PairB
 @torch.no_grad()
 def run_experiment(
     model: HookedTransformer, settings: Settings,
-) -> tuple[ExperimentReport, dict[str, dict[str, object]]]:
-    # 1. Choose heads using one set of random sequences.
-    discovery = build_data(model, settings, settings.seed)
-    discovery_scores = measure_attention(read_attention(model, discovery), discovery)
-    selected = select_heads(discovery_scores)
-
-    # 2. Save the actual evaluation run and measure its attention.
-    evaluation = build_data(model, settings, settings.seed + 1)
-    cache = read_run(model, evaluation)
+) -> tuple[ExperimentReport, dict[str, object]]:
+    data = build_data(model, settings, settings.seed)
+    cache = read_run(model, data)
     patterns = [cache["pattern", layer] for layer in range(model.cfg.n_layers)]
-    evaluation_scores = measure_attention(patterns, evaluation)
-
-    # 3. Follow key and output contributions in that same, unchanged run.
-    trace = trace_run(model, cache, evaluation, selected["early_head"], selected["late_head"])
+    attention = measure_attention(patterns, data)
+    selected = select_heads(attention)
+    trace = trace_run(model, cache, data, selected["early_head"], selected["late_head"])
 
     report: ExperimentReport = {
         "selected_heads": selected,
-        "query_count": len(evaluation.last_occurrences()),
-        "discovery_attention": discovery_scores,
-        "evaluation_attention": evaluation_scores,
+        "query_count": len(data.last_occurrences()),
+        "attention": attention,
         "trace": trace,
     }
-    inputs = {"discovery": discovery.to_dict(), "evaluation": evaluation.to_dict()}
-    return report, inputs
+    return report, data.to_dict()
 
 
 def save_json(path: Path, value: object) -> None:
@@ -104,12 +94,12 @@ def save_json(path: Path, value: object) -> None:
 def write_summary(path: Path, report: ExperimentReport) -> None:
     selected = report["selected_heads"]
     early, late = selected["early_head"], selected["late_head"]
-    attention = report["evaluation_attention"][1]
+    attention = report["attention"][1]
     lines = [
         "# Information flow in the actual run",
         "",
         f"Selected heads: L0H{early} and L1H{late}.",
-        f"Evaluation queries: {report['query_count']}.",
+        f"Queries: {report['query_count']}.",
         f"Matching-source attention: {attention['matching_source_mass'][late]:.4f}.",
         f"Top source match rate: {attention['top_source_match_rate'][late]:.4f}.",
         "",

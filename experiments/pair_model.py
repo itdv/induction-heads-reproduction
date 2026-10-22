@@ -51,20 +51,6 @@ def load_model() -> HookedTransformer:
 
 
 @torch.no_grad()
-def read_attention(model: HookedTransformer, data: PairBatch) -> list[torch.Tensor]:
-    """Run the model once. Save only attention patterns; do not compute logits."""
-    if data.tokens.shape[1] > model.cfg.n_ctx:
-        raise ValueError("The generated sequence is longer than the model context.")
-
-    _, cache = model.run_with_cache(
-        data.tokens,
-        return_type=None,
-        names_filter=lambda name: name.endswith("attn.hook_pattern"),
-    )
-    return [cache["pattern", layer] for layer in range(model.cfg.n_layers)]
-
-
-@torch.no_grad()
 def read_run(model: HookedTransformer, data: PairBatch) -> ActivationCache:
     """Save the activations used to trace this actual run. Do not change them."""
     if data.tokens.shape[1] > model.cfg.n_ctx:

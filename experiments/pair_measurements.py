@@ -55,10 +55,10 @@ def measure_attention(
     return layer_scores
 
 
-def select_heads(discovery_scores: list[AttentionScores]) -> SelectedHeads:
+def select_heads(attention_scores: list[AttentionScores]) -> SelectedHeads:
     """Choose an early previous-token head and a late matching-source head."""
-    early_scores = discovery_scores[0]["previous_token_mass"]
-    late_scores = discovery_scores[1]["matching_source_mass"]
+    early_scores = attention_scores[0]["previous_token_mass"]
+    late_scores = attention_scores[1]["matching_source_mass"]
     return {
         "early_head": max(range(len(early_scores)), key=lambda head: early_scores[head]),
         "late_head": max(range(len(late_scores)), key=lambda head: late_scores[head]),

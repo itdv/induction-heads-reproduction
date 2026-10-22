@@ -1,7 +1,7 @@
 # Information flow in the actual run
 
 Selected heads: L0H3 and L1H5.
-Evaluation queries: 128.
+Queries: 128.
 Matching-source attention: 0.6027.
 Top source match rate: 0.5547.
 

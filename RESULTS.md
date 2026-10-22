@@ -5,7 +5,7 @@ Inputs match the preceding mechanism reference; this is not a new independent sa
 
 ## Attention
 
-Discovery selects L0H3 and L1H5. Evaluation has 128 queries in 32 sequences.
+The same cached run selects L0H3 and L1H5 and supplies the trace: 128 queries in 32 sequences.
 
 L1H5 puts 60.27% of its attention on earlier matching B sources.
 Its top attention position is a matching source in 71/128 queries (55.47%).

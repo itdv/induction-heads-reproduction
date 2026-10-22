@@ -69,9 +69,9 @@ def test_head_selection_uses_the_right_layer_and_score():
     assert select_heads(scores) == {"early_head": 1, "late_head": 0}
 
 
-def test_attention_reader_matches_a_normal_forward_pass():
+def test_run_cache_matches_a_normal_forward_pass():
     from transformer_lens import HookedTransformer, HookedTransformerConfig
-    from pair_model import read_attention
+    from pair_model import read_run
 
     config = HookedTransformerConfig(
         n_layers=2, d_model=16, n_heads=2, d_head=8, n_ctx=256,
@@ -80,9 +80,9 @@ def test_attention_reader_matches_a_normal_forward_pass():
     )
     model = HookedTransformer(config).eval()
     data = make_pair_batch(200, 0, [0], batch=2, pairs=2, repeats=3, seed=3)
-    patterns = read_attention(model, data)
+    cache = read_run(model, data)
     with torch.no_grad():
         _, full_cache = model.run_with_cache(data.tokens)
 
-    for layer, pattern in enumerate(patterns):
-        torch.testing.assert_close(pattern, full_cache["pattern", layer])
+    for name, value in cache.items():
+        torch.testing.assert_close(value, full_cache[name])
