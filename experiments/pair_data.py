@@ -1,121 +1,90 @@
-"""Random background with recurring A->B pairs, without a repeated whole sequence."""
-from dataclasses import asdict, dataclass, replace
+"""Build random sequences with recurring A -> B pairs."""
+
+from dataclasses import asdict, dataclass
 import random
 
 import torch
 
 
 @dataclass(frozen=True)
-class PairEvent:
-    row: int
-    pair: int
-    occurrence: int
-    query: int
-    target: int
-    previous_values: tuple[int, ...]
+class PairOccurrence:
+    sequence_index: int
+    pair_index: int
+    occurrence_index: int
+    trigger_position: int
+    target_token: int
+    source_positions: tuple[int, ...]  # Earlier B positions for this pair only.
 
 
 @dataclass
 class PairBatch:
     tokens: torch.Tensor
-    lengths: list[int]
+    lengths: list[int]  # Real lengths, before right padding.
     pairs: list[list[tuple[int, int]]]
-    reserves: list[list[int]]
-    events: list[PairEvent]
+    occurrences: list[PairOccurrence]
     repeats: int
 
-    def queries(self, occurrence=-1):
-        """Choose one occurrence per pair; -1 means the last occurrence."""
-        occurrence = self.repeats - 1 if occurrence == -1 else occurrence
-        return [event for event in self.events if event.occurrence == occurrence]
+    def last_occurrences(self):
+        return [
+            event for event in self.occurrences
+            if event.occurrence_index == self.repeats - 1
+        ]
 
-    def serializable(self):
-        return {"tokens": self.tokens.tolist(), "lengths": self.lengths,
-                "pairs": self.pairs, "reserves": self.reserves,
-                "events": [asdict(event) for event in self.events], "repeats": self.repeats}
+    def to_dict(self):
+        return {
+            "tokens": self.tokens.tolist(),
+            "lengths": self.lengths,
+            "pairs": self.pairs,
+            "occurrences": [asdict(event) for event in self.occurrences],
+            "repeats": self.repeats,
+        }
 
 
 def make_pair_batch(vocab, bos, special_ids, *, batch=32, pairs=4, repeats=4,
                     min_gap=1, max_gap=9, seed=42):
-    """Shuffle pair order anew in each round and put fresh random noise before each pair.
+    """Each round contains every pair once, with new order and random gaps."""
+    if batch < 1 or pairs < 1 or repeats < 2 or not 1 <= min_gap <= max_gap:
+        raise ValueError("Use batch>=1, pairs>=1, repeats>=2 and 1<=min_gap<=max_gap.")
 
-    Pair IDs and reserved control IDs are excluded from noise, preventing accidental
-    A->other continuations. Sampling uses a local RNG; model weights are untouched.
-    Rounds balance exposure counts but their token sequences and lengths differ.
-    """
-    if batch < 1 or pairs < 2 or repeats < 2 or not 1 <= min_gap < max_gap:
-        raise ValueError("Require batch>=1, pairs>=2, repeats>=2, 1<=min_gap<max_gap")
-    allowed = [token for token in range(vocab) if token not in special_ids and token != bos]
-    if len(allowed) <= 3 * pairs:
-        raise ValueError("Vocabulary too small for distinct pairs, reserves and background")
+    allowed_tokens = [
+        token for token in range(vocab)
+        if token != bos and token not in special_ids
+    ]
+    if len(allowed_tokens) <= 2 * pairs:
+        raise ValueError("The vocabulary must leave room for background tokens.")
+
     rng = random.Random(seed)
-    sequences, all_pairs, reserves, events = [], [], [], []
-    for row in range(batch):
-        chosen = rng.sample(allowed, 3 * pairs)
-        mapping = list(zip(chosen[:pairs], chosen[pairs:2 * pairs]))
-        reserved = chosen[2 * pairs:]
-        excluded = set(chosen)
-        background = [token for token in allowed if token not in excluded]
+    sequences, all_pairs, occurrences = [], [], []
+
+    for sequence_index in range(batch):
+        pair_tokens = rng.sample(allowed_tokens, 2 * pairs)
+        mapping = list(zip(pair_tokens[:pairs], pair_tokens[pairs:]))
+        background = [token for token in allowed_tokens if token not in pair_tokens]
         sequence = [bos]
-        history = [[] for _ in mapping]
-        for occurrence in range(repeats):
-            # Each round contains every pair once, in a newly shuffled order.
-            order = rng.sample(range(pairs), pairs)
-            for pair in order:
-                # Sample a fresh background length and fresh background tokens.
-                sequence.extend(rng.choices(background, k=rng.randint(min_gap, max_gap)))
-                trigger, target = mapping[pair]
-                # The next position will contain A, whose next-token target is B.
-                query = len(sequence)
-                # Snapshot only PAST B positions; the current B must not be a source.
-                events.append(PairEvent(row, pair, occurrence, query, target, tuple(history[pair])))
+        source_history = [[] for _ in mapping]
+
+        for occurrence_index in range(repeats):
+            pair_order = rng.sample(range(pairs), pairs)
+            for pair_index in pair_order:
+                gap_length = rng.randint(min_gap, max_gap)
+                sequence.extend(rng.choices(background, k=gap_length))
+                trigger, target = mapping[pair_index]
+                trigger_position = len(sequence)
+
+                # Record past sources before adding the current B.
+                occurrences.append(PairOccurrence(
+                    sequence_index, pair_index, occurrence_index,
+                    trigger_position, target, tuple(source_history[pair_index]),
+                ))
                 sequence.extend([trigger, target])
-                history[pair].append(query + 1)
+                source_history[pair_index].append(trigger_position + 1)
+
         sequences.append(sequence)
         all_pairs.append(mapping)
-        reserves.append(reserved)
+
     lengths = [len(sequence) for sequence in sequences]
     tokens = torch.full((batch, max(lengths)), bos, dtype=torch.long)
     for row, sequence in enumerate(sequences):
         tokens[row, :len(sequence)] = torch.tensor(sequence)
-    return PairBatch(tokens, lengths, all_pairs, reserves, events, repeats)
 
-
-def remove_pair_history(data):
-    """Change only earlier A tokens to reserved IDs, preserving B tokens and distances.
-
-    The final-round queries still contain original A. None of these A tokens has
-    appeared earlier in its own prefix. This is a control input, not a head ablation.
-    """
-    tokens = data.tokens.clone()
-    for event in data.events:
-        if event.occurrence < data.repeats - 1:
-            tokens[event.row, event.query] = data.reserves[event.row][event.pair]
-    return replace(data, tokens=tokens)
-
-
-def rotate_pair_values(data):
-    """Keep trigger positions and background, cyclically permute B identities."""
-    mappings = [[(trigger, mapping[(i + 1) % len(mapping)][1])
-                 for i, (trigger, _) in enumerate(mapping)] for mapping in data.pairs]
-    tokens = data.tokens.clone()
-    events = []
-    for event in data.events:
-        target = mappings[event.row][event.pair][1]
-        tokens[event.row, event.query + 1] = target
-        events.append(replace(event, target=target))
-    return replace(data, tokens=tokens, pairs=mappings, events=events)
-
-
-def best_fixed_offset(data):
-    """Choose a fixed lag using discovery only, as a positional baseline."""
-    queries = data.queries()
-    hits = [sum(event.query - lag in event.previous_values for event in queries)
-            for lag in range(1, data.tokens.shape[1])]
-    lag = max(range(1, len(hits) + 1), key=lambda value: hits[value - 1])
-    return lag
-
-
-def fixed_offset_accuracy(data, lag):
-    queries = data.queries()
-    return sum(event.query - lag in event.previous_values for event in queries) / len(queries)
+    return PairBatch(tokens, lengths, all_pairs, occurrences, repeats)

@@ -1,17 +1,20 @@
-r"""Recurring-pair induction with the paper's simple weight-based circuit tests.
+"""Find candidate heads, measure their attention, and test their OV/QK weights.
 
-Run: .venv\Scripts\python.exe experiments/induction_pairs.py
+Run from the repository root: python experiments/induction_pairs.py
 """
+
 import argparse
 from dataclasses import asdict, dataclass
 import json
 
-from pair_model import ROOT, MODEL, REVISION, load_model, clean_run
-from pair_data import make_pair_batch, remove_pair_history, rotate_pair_values
-from pair_data import best_fixed_offset, fixed_offset_accuracy
-from pair_measurements import prediction_metrics, attention_metrics, select_heads, ablation_sweep
-from paper_circuits import analyze_circuits, save_circuit_plot
 import torch
+
+from pair_config import ROOT, MODEL, REVISION, TOKENIZER, TOKENIZER_REVISION
+from pair_data import make_pair_batch
+from pair_measurements import measure_attention, select_heads
+from pair_model import load_model, read_attention
+from paper_circuits import analyze_circuits
+from plot_circuits import save_circuit_plot
 
 
 @dataclass(frozen=True)
@@ -21,114 +24,117 @@ class Settings:
     repeats: int = 4
     min_gap: int = 1
     max_gap: int = 9
-    seed: int = 20261021
+    seed: int = 20261021  # Evaluation uses seed + 1.
     threads: int = 2
-    ablations: bool = True
-    output: str = 'work/induction/paper-01'
+    output: str = "work/induction/mechanism-01"
 
 
 def parse_settings():
     parser = argparse.ArgumentParser(description=__doc__)
-    for name in ('batch', 'pairs', 'repeats', 'min_gap', 'max_gap', 'seed', 'threads'):
-        parser.add_argument('--' + name.replace('_', '-'), type=int, default=getattr(Settings(), name))
-    parser.add_argument('--output', default=Settings().output)
-    parser.add_argument('--skip-ablations', action='store_true')
-    args = vars(parser.parse_args())
-    args['ablations'] = not args.pop('skip_ablations')
-    if args['threads'] < 1:
-        parser.error('threads must be positive')
-    return Settings(**args)
-
-
-def save(path, value):
-    path.write_text(json.dumps(value, ensure_ascii=False, indent=2), encoding='utf-8')
+    defaults = Settings()
+    for name in ("batch", "pairs", "repeats", "min_gap", "max_gap", "seed", "threads"):
+        parser.add_argument(
+            "--" + name.replace("_", "-"), type=int, default=getattr(defaults, name),
+        )
+    parser.add_argument("--output", default=defaults.output)
+    settings = Settings(**vars(parser.parse_args()))
+    if settings.threads < 1:
+        parser.error("--threads must be positive")
+    return settings
 
 
 def build_data(model, settings, seed):
-    return make_pair_batch(model.cfg.d_vocab, model.tokenizer.bos_token_id,
-                           model.tokenizer.all_special_ids, batch=settings.batch,
-                           pairs=settings.pairs, repeats=settings.repeats,
-                           min_gap=settings.min_gap, max_gap=settings.max_gap, seed=seed)
-
-
-def discover_heads(model, discovery):
-    _, cache = clean_run(model, discovery, capture=True)
-    attention = attention_metrics(cache, discovery)
-    return select_heads(attention), attention, best_fixed_offset(discovery)
-
-
-def evaluate_controls(model, data):
-    results = {}
-    for name, control in [('no_pair_history', remove_pair_history(data)),
-                          ('rotated_values', rotate_pair_values(data))]:
-        residual, _ = clean_run(model, control)
-        results[name] = prediction_metrics(model, residual, control)
-        if name == 'rotated_values':
-            results['rotated_values_scored_against_original_answers'] = prediction_metrics(model, residual, data)
-    return results
-
-
-def write_examples(path, data, predictions):
-    """Write exact token IDs, pair locations and predictions for manual inspection."""
-    lines = ['# Inputs and predictions: recurring pairs in random background\n',
-             'Numbers are token IDs. These synthetic sequences are not natural-language sentences.\n']
-    for row, length in enumerate(data.lengths):
-        lines.extend([f'## Sequence {row}\n', '```text',
-                      ' '.join(map(str, data.tokens[row, :length].tolist())), '```',
-                      '| Trigger A | Target B | Positions of A |', '|---|---|---|'])
-        for pair, (a, b) in enumerate(data.pairs[row]):
-            positions = [event.query for event in data.events if event.row == row and event.pair == pair]
-            lines.append(f'|{a}|{b}|{positions}|')
-        lines.extend(['\n| Query position | Correct token | Predicted token |', '|---|---|---|'])
-        for prediction in predictions['rows']:
-            if prediction['row'] == row:
-                lines.append(f"|{prediction['query']}|{prediction['target']}|{prediction['prediction']}|")
-    path.write_text('\n'.join(lines), encoding='utf-8')
+    return make_pair_batch(
+        model.cfg.d_vocab, model.tokenizer.bos_token_id,
+        model.tokenizer.all_special_ids,
+        batch=settings.batch, pairs=settings.pairs, repeats=settings.repeats,
+        min_gap=settings.min_gap, max_gap=settings.max_gap, seed=seed,
+    )
 
 
 @torch.no_grad()
-def run_experiment(model, settings, out):
+def run_experiment(model, settings):
+    # 1. Choose heads using one set of random sequences.
     discovery = build_data(model, settings, settings.seed)
-    data = build_data(model, settings, settings.seed + 1)
-    save(out / 'inputs.json', {'discovery':discovery.serializable(), 'evaluation':data.serializable()})
-    selected, discovery_attention, lag = discover_heads(model, discovery)
-    print('Selected on discovery: ' + json.dumps(selected), flush=True)
-    residual, cache = clean_run(model, data, capture=True)
-    baseline = prediction_metrics(model, residual, data)
-    report = {'selected':selected, 'discovery_attention':discovery_attention,
-              'attention':attention_metrics(cache, data), 'final_occurrence':baseline,
-              'first_occurrence':prediction_metrics(model, residual, data, occurrence=0),
-              'positional_baseline':{'lag_selected_on_discovery':lag,
-                                     'evaluation_hit_rate':fixed_offset_accuracy(data, lag)}}
-    save(out / 'baseline.json', report)
-    del cache, residual
-    circuits = analyze_circuits(model, selected['previous'])
-    save(out / 'mechanistic_analysis.json', circuits)
-    save_circuit_plot(circuits, selected['induction'], out / 'mechanistic_analysis.png')
-    report['controls'] = evaluate_controls(model, data)
-    if settings.ablations:
-        report['ablations'] = ablation_sweep(model, data, baseline)
-    restored, _ = clean_run(model, data)
-    restored_metrics = prediction_metrics(model, restored, data)
-    assert restored_metrics['rows'] == baseline['rows'], 'Clean predictions changed after interventions'
-    report['hook_cleanup_verified'] = True
-    save(out / 'results.json', report)
-    write_examples(out / 'examples.md', data, baseline)
-    print('FINAL ' + json.dumps({k:v for k,v in baseline.items() if k != 'rows'}), flush=True)
-    return report
+    discovery_scores = measure_attention(read_attention(model, discovery), discovery)
+    selected = select_heads(discovery_scores)
+
+    # 2. Measure attention on a separate set of random sequences.
+    evaluation = build_data(model, settings, settings.seed + 1)
+    evaluation_scores = measure_attention(read_attention(model, evaluation), evaluation)
+
+    # 3. Test OV and composed QK for every late head, using the selected early head.
+    circuits = analyze_circuits(model, selected["early_head"])
+
+    report = {
+        "selected_heads": selected,
+        "query_count": len(evaluation.last_occurrences()),
+        "discovery_attention": discovery_scores,
+        "evaluation_attention": evaluation_scores,
+        "circuits": circuits,
+    }
+    inputs = {"discovery": discovery.to_dict(), "evaluation": evaluation.to_dict()}
+    return report, inputs
+
+
+def save_json(path, value):
+    path.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
+
+
+def write_summary(path, report):
+    selected = report["selected_heads"]
+    early, late = selected["early_head"], selected["late_head"]
+    attention = report["evaluation_attention"][1]
+    lines = [
+        "# Mechanistic analysis",
+        "",
+        f"Selected heads: L0H{early} and L1H{late}.",
+        f"Evaluation queries: {report['query_count']}.",
+        f"Matching-source attention: {attention['matching_source_mass'][late]:.4f}.",
+        f"Top source match rate: {attention['top_source_match_rate'][late]:.4f}.",
+        "",
+        "| Late head | OV score | QK score |",
+        "|---|---:|---:|",
+    ]
+    for head in report["circuits"]["heads"]:
+        ov = head["ov_copying"]["positivity"]
+        qk = head["qk_same_matching"]["positivity"]
+        ov_text = "undefined" if ov is None else f"{ov:.4f}"
+        qk_text = "undefined" if qk is None else f"{qk:.4f}"
+        lines.append(f"| L1H{head['head']} | {ov_text} | {qk_text} |")
+    lines.extend([
+        "",
+        "Scores describe weights, not prediction accuracy.",
+        "The maps omit biases, positions and other paths in the model.",
+        "High scores support the proposed circuit; they do not prove it on every input.",
+    ])
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def main():
     settings = parse_settings()
-    out = ROOT / settings.output
-    out.mkdir(parents=True, exist_ok=False)
+    output = ROOT / settings.output
+    output.mkdir(parents=True, exist_ok=False)
     torch.set_num_threads(settings.threads)
-    save(out / 'protocol.json', {'model':MODEL, 'revision':REVISION, **asdict(settings),
-         'trained':False, 'mechanistic_analysis':'weight-only OV and K-composed QK eigenvalue positivity, following Elhage (2021)',
-         'selection':'separate discovery data; early previous head, late matching head'})
+
+    print("Loading the model.", flush=True)
     model = load_model()
-    run_experiment(model, settings, out)
+    print("Measuring attention and testing OV/QK weights.", flush=True)
+    report, inputs = run_experiment(model, settings)
+
+    save_json(output / "protocol.json", {
+        "model": MODEL, "model_revision": REVISION,
+        "tokenizer": TOKENIZER, "tokenizer_revision": TOKENIZER_REVISION,
+        "settings": asdict(settings), "training": False,
+    })
+    save_json(output / "inputs.json", inputs)
+    save_json(output / "results.json", report)
+    write_summary(output / "summary.md", report)
+    save_circuit_plot(report["circuits"], report["selected_heads"]["late_head"],
+                      output / "circuits.png")
+    print((output / "summary.md").read_text(encoding="utf-8"), flush=True)
+    print(f"Saved results to {output}", flush=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
