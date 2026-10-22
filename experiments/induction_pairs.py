@@ -158,8 +158,27 @@ def write_summary(path: Path, report: ExperimentReport) -> None:
     ])
     for name, logit in output["matching_value_parts"].items():
         lines.append(f"| {name} | {logit:.4f} |")
+    value_path = output["early_value_path"]
+    lines.extend([
+        "",
+        f"## Input reads through L0H{value_path['early_head']} and the late head",
+        "",
+        "The early head is selected by its mean value-path contribution above.",
+        "Each input read is weighted by both heads' actual attention weights.",
+        "",
+        "| Early read | Contribution to B's logit |",
+        "|---|---:|",
+    ])
+    for name, logit in value_path["read_contributions"].items():
+        lines.append(f"| {name} | {logit:.4f} |")
+    lines.extend([
+        "",
+        "source_itself means the earlier continuation position; token_before_source means its trigger.",
+        "These rows split the selected early-head value contribution; do not add them to it again.",
+    ])
     errors = [keys["key_reconstruction_error"], keys["score_reconstruction_error"],
-              output["value_reconstruction_error"], output["head_reconstruction_error"]]
+              output["value_reconstruction_error"], output["head_reconstruction_error"],
+              value_path["reconstruction_error"]]
     lines.extend([
         "",
         f"Largest reconstruction error: {max(errors):.8f}.",

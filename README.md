@@ -63,6 +63,12 @@ Split its write into matching B sources and all other sources.
 Within matching sources, split V into the token embedding, early-head writes and
 biases. Shortformer positions are not added to V.
 
+Then follow the early head with the largest mean value-path contribution back
+to its original input reads. `trace_value_reads()` splits these reads into the
+earlier B position itself, its preceding A, and all other positions. The early
+value bias is kept separate. Each read is weighted by both heads' actual attention
+and passed through their value/output weights, all the way to B's logit.
+
 Project each write onto B's unembedding vector to get its direct contribution
 to B's raw logit. There is no comparison with the other pair values. Read the
 full B logit from the final cached residual and subtract the selected head's
@@ -126,11 +132,11 @@ Use `--help` for the settings.
 ## Output
 
 - `summary.md`: attention and readable key/output contribution tables.
-- `results.json`: predictions, B probabilities, logit contributions, per-edge key records and reconstruction errors.
+- `results.json`: predictions, B probabilities, logit contributions, per-edge key records, input-token value-path contributions and reconstruction errors.
 - `inputs.json`: exact inputs for the single batch.
 - `protocol.json`: settings and pinned model/tokenizer revisions.
 
-Current results: [results/target-reference](results/target-reference). See [RESULTS.md](RESULTS.md).
+Current results: [results/value-path-reference](results/value-path-reference). See [RESULTS.md](RESULTS.md).
 Other result folders record earlier versions and are not the current analysis.
 There is no eigenvalue analysis in the active code.
 
@@ -155,8 +161,8 @@ public model. This does not reproduce the original weights or every paper experi
 python -m pytest -q
 ```
 
-Six tests cover data, source indexing, head selection, cache reading, and real
+Eight tests cover data, source indexing, head selection, cache reading, and real
 forward-pass decompositions with nonzero biases, and predictions against normal
-model logits. They also check that tracing
+model logits. Two known-read cases check the value-source labels and bias separation. Tests also check that tracing
 leaves the cache, input tokens and model weights unchanged. No pretrained model
 download is needed for tests.

@@ -44,6 +44,22 @@ class KeyTrace(TypedDict):
     edges: list[EdgeRecord]
 
 
+class ValueReadRecord(TypedDict):
+    row: int
+    query: int
+    sources: list[int]
+    token_ids: list[int]
+    token_logit_contributions: list[float]
+    value_bias_logit: float
+
+
+class EarlyValuePath(TypedDict):
+    early_head: int
+    read_contributions: dict[str, float]
+    reconstruction_error: float
+    queries: list[ValueReadRecord]
+
+
 class OutputTrace(TypedDict):
     target_logit: float
     head_logit: float
@@ -51,6 +67,7 @@ class OutputTrace(TypedDict):
     matching_sources_logit: float
     other_sources_logit: float
     matching_value_parts: dict[str, float]
+    early_value_path: EarlyValuePath
     value_reconstruction_error: float
     head_reconstruction_error: float
     query_head_logits: list[float]
@@ -175,6 +192,65 @@ def trace_keys(
 
 
 @torch.no_grad()
+def trace_value_reads(
+    model: HookedTransformer, cache: ActivationCache, data: PairBatch,
+    early_head: int, late_head: int, target_direction: torch.Tensor,
+    expected_logits: torch.Tensor,
+) -> EarlyValuePath:
+    """Follow input token -> early read -> late read -> B's logit.
+
+    Both attention weights come from the same run. Separate the early value
+    bias so it is not mistaken for information from a particular token.
+    """
+    value_to_output = (
+        model.W_O[0, early_head]
+        @ model.W_V[1, late_head]
+        @ model.W_O[1, late_head]
+    )
+    directions = target_direction @ value_to_output.T
+    groups: dict[str, list[torch.Tensor]] = {
+        "source_itself": [], "token_before_source": [],
+        "other_tokens": [], "early_value_bias": [],
+    }
+    records: list[ValueReadRecord] = []
+    for i, event in enumerate(data.last_occurrences()):
+        row, query = event.sequence_index, event.trigger_position
+        sources = list(event.source_positions)
+        late_weights = cache["pattern", 1][row, late_head, query, sources]
+        early_weights = cache["pattern", 0][row, early_head, sources, :]
+        content_values = cache["v", 0][row, :, early_head] - model.b_V[0, early_head]
+        token_scores = content_values @ directions[i]
+
+        # Each entry follows one original token through one earlier B position.
+        contributions = late_weights[:, None] * early_weights * token_scores[None, :]
+        source_index = torch.arange(len(sources))
+        same = contributions[source_index, sources].sum()
+        before = contributions[source_index, [s - 1 for s in sources]].sum()
+        bias = late_weights.sum() * (model.b_V[0, early_head] @ directions[i])
+        groups["source_itself"].append(same)
+        groups["token_before_source"].append(before)
+        groups["other_tokens"].append(contributions.sum() - same - before)
+        groups["early_value_bias"].append(bias)
+
+        prefix_length = max(sources) + 1
+        records.append({
+            "row": row, "query": query, "sources": sources,
+            "token_ids": data.tokens[row, :prefix_length].tolist(),
+            "token_logit_contributions": contributions.sum(0)[:prefix_length].tolist(),
+            "value_bias_logit": float(bias),
+        })
+
+    parts = {name: torch.stack(values) for name, values in groups.items()}
+    error = check_sum(torch.stack(list(parts.values())).sum(0), expected_logits)
+    return {
+        "early_head": early_head,
+        "read_contributions": {name: float(values.mean()) for name, values in parts.items()},
+        "reconstruction_error": error,
+        "queries": records,
+    }
+
+
+@torch.no_grad()
 def trace_output(
     model: HookedTransformer, cache: ActivationCache, data: PairBatch, late_head: int,
 ) -> OutputTrace:
@@ -222,6 +298,17 @@ def trace_output(
     value_error = check_sum(torch.stack(list(parts.values())).sum(0), matching_write)
     head_logit = (head_write * target_direction).sum(-1)
     matching_logit = (matching_write * target_direction).sum(-1)
+    value_logits = {
+        name: (write * target_direction).sum(-1) for name, write in parts.items()
+    }
+    # Continue through the early head with the largest value-path contribution.
+    early_value_head = max(
+        range(model.cfg.n_heads), key=lambda head: float(value_logits[f"L0H{head}"].mean()),
+    )
+    early_value_path = trace_value_reads(
+        model, cache, data, early_value_head, late_head, target_direction,
+        value_logits[f"L0H{early_value_head}"],
+    )
     return {
         "target_logit": float(target_logit.mean()),
         "head_logit": float(head_logit.mean()),
@@ -229,8 +316,9 @@ def trace_output(
         "matching_sources_logit": float(matching_logit.mean()),
         "other_sources_logit": float((head_logit - matching_logit).mean()),
         "matching_value_parts": {
-            name: float((write * target_direction).sum(-1).mean()) for name, write in parts.items()
+            name: float(values.mean()) for name, values in value_logits.items()
         },
+        "early_value_path": early_value_path,
         "value_reconstruction_error": value_error,
         "head_reconstruction_error": head_error,
         "query_head_logits": head_logit.tolist(),

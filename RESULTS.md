@@ -1,6 +1,7 @@
 # Results: prediction and direct support for B
 
-Run on 2026-10-22, on the same 32 sequences and seed as the previous traced run.
+Run on 2026-10-23, on the same 32 sequences and seed as the earlier traced run.
+The inputs, key trace, predictions and existing output contributions match the saved results.
 One model forward pass supplies both head selection and the analysis. No training
 or activation interventions.
 
@@ -29,8 +30,7 @@ is contained in the L0H3 row.
 
 ## Direct contributions to B
 
-The output analysis now measures B's raw logit directly. It no longer subtracts
-other pair values or any other-token baseline.
+Each write is projected onto B's output direction to measure its raw-logit contribution.
 
 | Component | Mean contribution to B's logit |
 |---|---:|
@@ -48,21 +48,36 @@ Ratios can exceed 100% because other components reduce the total. They are
 undefined when the mean total is zero. No positive-support denominator is used.
 
 The source and value rows are nested parts, not extra terms to add to the full head.
-The report keeps only the head-versus-rest comparison, along with per-query
-predictions and selected-head contributions. It does not loop over other late
-heads to split their contributions. Existing saved results were reformatted;
-the pretrained model was not run again for this simplification.
+
+## Following L0H2 back to the input
+
+L0H2 has the largest mean early-head contribution through the late value path.
+Its contribution of 3.0524 splits as follows:
+
+| Original read by L0H2 at an earlier B position | Contribution to B's logit through L1H5 |
+|---|---:|
+| B at that same position | 3.0422 |
+| A immediately before it | 0.0068 |
+| All other positions | 0.0034 |
+| Early value bias | 0.0000 |
+
+Each entry includes both heads' observed attention weights and their value/output
+maps. In this run, L0H2 mainly carries information from B itself into the late
+head's value path. L0H3 carries information from the preceding A into its key path.
+The per-query records also show the contribution from each original input position.
+The new split reconstructs the existing L0H2 contribution with a maximum error
+of 0.00000143.
 
 ## Verification and files
 
-The largest reconstruction error is 0.00000572. Six tests passed, including
+The largest reconstruction error is 0.00000572. Eight tests passed, including
 nonzero biases, prediction checks against a normal
-forward pass, and unchanged cache/weights.
+forward pass, and unchanged cache/weights, and known reads with separate value bias.
 
-- [Readable tables](results/target-reference/summary.md).
-- [Predictions and contributions](results/target-reference/results.json).
-- [Exact inputs](results/target-reference/inputs.json).
-- [Settings and revisions](results/target-reference/protocol.json).
+- [Readable tables](results/value-path-reference/summary.md).
+- [Predictions and contributions](results/value-path-reference/results.json).
+- [Exact inputs](results/value-path-reference/inputs.json).
+- [Settings and revisions](results/value-path-reference/protocol.json).
 
 These are additive contributions in the actual run, not ablation effects.
 Older result folders record earlier metrics and are not the current output analysis.

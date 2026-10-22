@@ -1,0 +1,18 @@
+{
+  "model": "NeelNanda/Attn-Only-2L512W-Shortformer-6B-big-lr",
+  "model_revision": "438f8e124b85bde1b6e64c63e9445e31b45f5be6",
+  "tokenizer": "EleutherAI/gpt-neox-20b",
+  "tokenizer_revision": "c292233c833e336628618a88a648727eb3dff0a7",
+  "settings": {
+    "batch": 32,
+    "pairs": 4,
+    "repeats": 4,
+    "min_gap": 1,
+    "max_gap": 9,
+    "seed": 20261022,
+    "threads": 2,
+    "output": "work/induction/value-path-01"
+  },
+  "training": false,
+  "analysis": "Additive key and output contributions in the actual cached run"
+}
