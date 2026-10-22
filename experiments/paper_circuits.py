@@ -4,10 +4,44 @@ These are the two weight tests in Elhage et al. (2021).
 Weights use TransformerLens's row-vector convention.
 """
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, TypedDict
+
 import torch
 
+if TYPE_CHECKING:
+    from transformer_lens import HookedTransformer
 
-def ov_factors(model, head):
+
+class Eigenvalue(TypedDict):
+    real: float
+    imag: float
+
+
+class EigenvalueSummary(TypedDict):
+    positivity: float | None
+    eigenvalues: list[Eigenvalue]
+
+
+class HeadCircuitScores(TypedDict):
+    head: int
+    ov_copying: EigenvalueSummary
+    qk_same_matching: EigenvalueSummary
+
+
+class CircuitAnalysis(TypedDict):
+    early_head: int
+    late_layer: int
+    score: str
+    assumptions: str
+    source: str
+    heads: list[HeadCircuitScores]
+
+
+def ov_factors(
+    model: HookedTransformer, head: int,
+) -> tuple[torch.Tensor, torch.Tensor]:
     """left @ right maps a source token to output token scores."""
     embedding = model.W_E.double()
     left = embedding @ model.W_V[1, head].double()
@@ -15,7 +49,9 @@ def ov_factors(model, head):
     return left, right
 
 
-def matching_factors(model, early_head, late_head):
+def matching_factors(
+    model: HookedTransformer, early_head: int, late_head: int,
+) -> tuple[torch.Tensor, torch.Tensor]:
     """left @ right matches a current token to an earlier preceding token."""
     embedding = model.W_E.double()
 
@@ -33,7 +69,9 @@ def matching_factors(model, early_head, late_head):
     return query, key.T / scale
 
 
-def eigenvalue_summary(left, right):
+def eigenvalue_summary(
+    left: torch.Tensor, right: torch.Tensor,
+) -> EigenvalueSummary:
     """Compute the paper's score without building a vocabulary-sized map.
 
     The nonzero eigenvalues of left @ right equal those of right @ left.
@@ -52,9 +90,9 @@ def eigenvalue_summary(left, right):
 
 
 @torch.no_grad()
-def analyze_circuits(model, early_head):
+def analyze_circuits(model: HookedTransformer, early_head: int) -> CircuitAnalysis:
     """Apply the same two tests to every head in the second layer."""
-    heads = []
+    heads: list[HeadCircuitScores] = []
     for head in range(model.cfg.n_heads):
         ov = eigenvalue_summary(*ov_factors(model, head))
         qk = eigenvalue_summary(*matching_factors(model, early_head, head))

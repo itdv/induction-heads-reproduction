@@ -28,6 +28,9 @@ There are no input controls, prediction scores, head ablations or detailed activ
 
 Names, comments and output are in plain English.
 
+Functions have input and return types. Result dictionaries use `TypedDict`, so
+the editor can show their keys and follow the types between functions.
+
 ## Inputs
 
 Each sequence contains four distinct pairs, such as `A -> B` and `C -> D`. Each pair occurs four times. Every round has a new pair order. Each pair has 1–9 random background tokens before it.

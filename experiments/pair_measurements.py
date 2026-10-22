@@ -1,12 +1,30 @@
 """Measure attention and choose candidate heads. No prediction or interventions."""
 
+from typing import TypedDict
+
 import torch
 
+from pair_data import PairBatch
 
-def measure_attention(patterns, data):
+
+class AttentionScores(TypedDict):
+    """One score per head, in head order, for a single layer."""
+    previous_token_mass: list[float]
+    matching_source_mass: list[float]
+    top_source_match_rate: list[float]
+
+
+class SelectedHeads(TypedDict):
+    early_head: int
+    late_head: int
+
+
+def measure_attention(
+    patterns: list[torch.Tensor], data: PairBatch,
+) -> list[AttentionScores]:
     """patterns[layer] has shape [sequence, head, query, source]."""
     queries = data.last_occurrences()
-    layer_scores = []
+    layer_scores: list[AttentionScores] = []
 
     for pattern in patterns:
         previous_token_scores = []
@@ -37,11 +55,11 @@ def measure_attention(patterns, data):
     return layer_scores
 
 
-def select_heads(discovery_scores):
+def select_heads(discovery_scores: list[AttentionScores]) -> SelectedHeads:
     """Choose an early previous-token head and a late matching-source head."""
     early_scores = discovery_scores[0]["previous_token_mass"]
     late_scores = discovery_scores[1]["matching_source_mass"]
     return {
-        "early_head": max(range(len(early_scores)), key=early_scores.__getitem__),
-        "late_head": max(range(len(late_scores)), key=late_scores.__getitem__),
+        "early_head": max(range(len(early_scores)), key=lambda head: early_scores[head]),
+        "late_head": max(range(len(late_scores)), key=lambda head: late_scores[head]),
     }

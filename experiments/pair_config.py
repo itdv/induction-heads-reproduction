@@ -10,6 +10,6 @@ TOKENIZER = 'EleutherAI/gpt-neox-20b'
 TOKENIZER_REVISION = 'c292233c833e336628618a88a648727eb3dff0a7'
 
 
-def snapshot_path(repo_id, revision):
+def snapshot_path(repo_id: str, revision: str) -> Path:
     """Find a pinned snapshot in the standard Hugging Face cache layout."""
     return CACHE_DIR / 'hub' / ('models--' + repo_id.replace('/', '--')) / 'snapshots' / revision

@@ -1,5 +1,6 @@
 """Build random sequences with recurring A -> B pairs."""
 
+from collections.abc import Collection
 from dataclasses import asdict, dataclass
 import random
 
@@ -24,13 +25,13 @@ class PairBatch:
     occurrences: list[PairOccurrence]
     repeats: int
 
-    def last_occurrences(self):
+    def last_occurrences(self) -> list[PairOccurrence]:
         return [
             event for event in self.occurrences
             if event.occurrence_index == self.repeats - 1
         ]
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, object]:
         return {
             "tokens": self.tokens.tolist(),
             "lengths": self.lengths,
@@ -40,8 +41,11 @@ class PairBatch:
         }
 
 
-def make_pair_batch(vocab, bos, special_ids, *, batch=32, pairs=4, repeats=4,
-                    min_gap=1, max_gap=9, seed=42):
+def make_pair_batch(
+    vocab: int, bos: int, special_ids: Collection[int], *,
+    batch: int = 32, pairs: int = 4, repeats: int = 4,
+    min_gap: int = 1, max_gap: int = 9, seed: int = 42,
+) -> PairBatch:
     """Each round contains every pair once, with new order and random gaps."""
     if batch < 1 or pairs < 1 or repeats < 2 or not 1 <= min_gap <= max_gap:
         raise ValueError("Use batch>=1, pairs>=1, repeats>=2 and 1<=min_gap<=max_gap.")
@@ -54,14 +58,16 @@ def make_pair_batch(vocab, bos, special_ids, *, batch=32, pairs=4, repeats=4,
         raise ValueError("The vocabulary must leave room for background tokens.")
 
     rng = random.Random(seed)
-    sequences, all_pairs, occurrences = [], [], []
+    sequences: list[list[int]] = []
+    all_pairs: list[list[tuple[int, int]]] = []
+    occurrences: list[PairOccurrence] = []
 
     for sequence_index in range(batch):
         pair_tokens = rng.sample(allowed_tokens, 2 * pairs)
         mapping = list(zip(pair_tokens[:pairs], pair_tokens[pairs:]))
         background = [token for token in allowed_tokens if token not in pair_tokens]
         sequence = [bos]
-        source_history = [[] for _ in mapping]
+        source_history: list[list[int]] = [[] for _ in mapping]
 
         for occurrence_index in range(repeats):
             pair_order = rng.sample(range(pairs), pairs)

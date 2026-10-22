@@ -1,11 +1,13 @@
 """Draw the OV/QK scores. Plotting is separate from the analysis."""
 
 import os
+from pathlib import Path
 
 from pair_config import ROOT
+from paper_circuits import CircuitAnalysis
 
 
-def save_circuit_plot(circuits, selected_head, path):
+def save_circuit_plot(circuits: CircuitAnalysis, selected_head: int, path: Path) -> None:
     cache_dir = ROOT / "work/mpl-cache"
     cache_dir.mkdir(parents=True, exist_ok=True)
     os.environ.setdefault("MPLCONFIGDIR", str(cache_dir))

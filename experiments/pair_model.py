@@ -1,6 +1,9 @@
 """Load the pinned model from local files and read its attention patterns."""
 
+from __future__ import annotations
+
 import os
+from typing import TYPE_CHECKING
 from unittest.mock import patch
 
 import torch
@@ -8,9 +11,13 @@ import torch
 from pair_config import (
     CACHE_DIR, MODEL, REVISION, TOKENIZER, TOKENIZER_REVISION, snapshot_path,
 )
+from pair_data import PairBatch
+
+if TYPE_CHECKING:
+    from transformer_lens import HookedTransformer
 
 
-def load_model():
+def load_model() -> HookedTransformer:
     """Run download_model.py once before using this offline loader."""
     os.environ["HF_HOME"] = str(CACHE_DIR)
     os.environ["HF_HUB_OFFLINE"] = "1"
@@ -44,7 +51,7 @@ def load_model():
 
 
 @torch.no_grad()
-def read_attention(model, data):
+def read_attention(model: HookedTransformer, data: PairBatch) -> list[torch.Tensor]:
     """Run the model once. Save only attention patterns; do not compute logits."""
     if data.tokens.shape[1] > model.cfg.n_ctx:
         raise ValueError("The generated sequence is longer than the model context.")

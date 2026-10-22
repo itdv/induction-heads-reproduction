@@ -6,7 +6,7 @@ The tokenizer repository belongs to a 20B model, but NO 20B model weights are fe
 from pair_config import CACHE_DIR, MODEL, REVISION, TOKENIZER, TOKENIZER_REVISION
 
 
-def main():
+def main() -> None:
     from huggingface_hub import snapshot_download
 
     cache = str(CACHE_DIR / 'hub')
