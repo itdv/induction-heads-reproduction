@@ -1,46 +1,60 @@
-# Results: mechanistic analysis
+# Results: information flow in the actual run
 
-No training or weight changes. Run on 2026-10-22.
+Run on 2026-10-22. No training, input changes or activation interventions.
+Inputs match the preceding mechanism reference; this is not a new independent sample.
 
 ## Attention
 
-Heads selected on 32 discovery sequences:
+Discovery selects L0H3 and L1H5. Evaluation has 128 queries in 32 sequences.
 
-- L0H3: previous-token head.
-- L1H5: matching-source head.
+L1H5 puts 60.27% of its attention on earlier matching B sources.
+Its top attention position is a matching source in 71/128 queries (55.47%).
+These are attention measurements, not next-token prediction accuracy.
 
-On 32 separate evaluation sequences (128 queries), L1H5 puts **60.27%** of its attention on the earlier matching B positions. Its highest-attention position is a matching source in **71/128 queries (55.47%)**.
+## Key contributions
 
-These measure source attention, not next-token prediction accuracy.
+Hold the actual L1H5 Q fixed. Decompose its cached K, including positions and biases.
 
-## Weight tests
+| Raw-score contribution | Matching sources | Other pair sources | Difference |
+|---|---:|---:|---:|
+| Total cached attention score | 13.4412 | 6.0746 | 7.3665 |
+| Key contribution from L0H3 | 7.3815 | 0.1953 | 7.1862 |
+| Within L0H3: read from preceding token | 7.3579 | 0.1695 | 7.1884 |
 
-Both maps use L0H3 as the early head.
+The last row is contained in the L0H3 row. It must not be added again.
+The comparison groups existing sources in the same unchanged input.
 
-| Late head | OV score | Composed QK score |
-|---|---:|---:|
-| L1H0 | -0.3395 | 0.0985 |
-| L1H1 | 0.9857 | 0.9764 |
-| L1H2 | 0.9937 | 0.9088 |
-| L1H3 | 0.9596 | 0.6525 |
-| L1H4 | 0.0682 | -0.0115 |
-| L1H5 | 0.9989 | 0.9971 |
-| L1H6 | 0.3117 | -0.2437 |
-| L1H7 | 0.4650 | 0.3236 |
+## Output contributions
 
-![OV and QK scores](results/mechanism-reference/circuits.png)
+Report direct contributions to the correct target logit minus the mean logit of
+the other pair values in that context.
 
-The attention-selected L1H5 has the highest score in both weight tests. Other heads also have high scores. The results support the proposed copying/matching circuit, but do not prove a unique or complete circuit.
+| Contribution | Margin |
+|---|---:|
+| Full L1H5 write | 7.4430 |
+| L1H5 reads from matching sources | 7.4805 |
+| L1H5 reads from all other sources | -0.0375 |
+| Within matching sources: token embeddings | 4.5118 |
+| Within matching sources: L0H2 writes | 3.0210 |
 
-The score is `real(sum(eigenvalues)) / sum(abs(eigenvalues))`. It is not prediction accuracy. The maps omit biases, positions and other paths, following the simplified analysis in [Elhage et al. (2021)](https://transformer-circuits.pub/2021/framework/index.html).
+The embedding and L0H2 rows are parts of the matching-source row.
+This is a direct logit decomposition, not prediction accuracy or an ablation effect.
 
-## Records
+## Reconstruction
 
-- [Short summary](results/mechanism-reference/summary.md).
-- [Exact inputs](results/mechanism-reference/inputs.json).
-- [Attention, weight scores and eigenvalues](results/mechanism-reference/results.json).
-- [Settings and model revisions](results/mechanism-reference/protocol.json).
+The largest discrepancy when reconstructing cached K, attention scores, Z and
+matching-source writes is 0.00000572. The same code passed tests on small real
+Shortformer runs with nonzero biases, leaving all cached tensors and weights unchanged.
 
-The generator no longer reserves tokens for input controls. This changes the sampled inputs. The weight scores are unchanged; attention was measured again on the new inputs. Earlier reference folders record older versions, not extra independent replications.
+These results support a context-dependent path from L0H3 into L1H5's key and from
+matching sources into its output. They do not establish that this is the only
+path, that two heads alone suffice, or that all contributions are causal effects.
 
-Eight tests passed, and the full script ran on the pinned pretrained model.
+## Files
+
+- [Readable tables](results/run-reference/summary.md).
+- [All contributions and per-edge records](results/run-reference/results.json).
+- [Exact inputs](results/run-reference/inputs.json).
+- [Settings and revisions](results/run-reference/protocol.json).
+
+Six tests passed. The full pretrained-model run completed.

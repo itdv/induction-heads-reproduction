@@ -14,7 +14,7 @@ from pair_config import (
 from pair_data import PairBatch
 
 if TYPE_CHECKING:
-    from transformer_lens import HookedTransformer
+    from transformer_lens import ActivationCache, HookedTransformer
 
 
 def load_model() -> HookedTransformer:
@@ -62,3 +62,20 @@ def read_attention(model: HookedTransformer, data: PairBatch) -> list[torch.Tens
         names_filter=lambda name: name.endswith("attn.hook_pattern"),
     )
     return [cache["pattern", layer] for layer in range(model.cfg.n_layers)]
+
+
+@torch.no_grad()
+def read_run(model: HookedTransformer, data: PairBatch) -> ActivationCache:
+    """Save the activations used to trace this actual run. Do not change them."""
+    if data.tokens.shape[1] > model.cfg.n_ctx:
+        raise ValueError("The generated sequence is longer than the model context.")
+
+    names = (
+        "hook_embed", "hook_pos_embed", "attn.hook_pattern", "attn.hook_q",
+        "attn.hook_k", "attn.hook_v", "attn.hook_z", "attn.hook_attn_scores",
+    )
+    _, cache = model.run_with_cache(
+        data.tokens, return_type=None,
+        names_filter=lambda name: name.endswith(names),
+    )
+    return cache

@@ -1,11 +1,11 @@
 cff-version: 1.2.0
 message: "If you refer to this seminar implementation, cite the repository and the exact commit used."
-title: "Induction Heads: Recurring Pairs and Paper-Style Circuit Tests"
+title: "Induction Heads: Information Flow in an Actual Run"
 type: software
 authors:
   - family-names: Dvir
     given-names: Itamar
-version: 0.3.0
+version: 0.4.0
 date-released: 2026-10-22
 repository-code: "https://github.com/itdv/induction-heads-reproduction"
-abstract: "A CPU-based experiment on recurring token pairs in a pretrained two-layer attention-only transformer. Mechanistic analysis follows Elhage et al. (2021): OV copying and K-composed QK same-token matching, summarized by eigenvalue positivity."
+abstract: "A CPU-based analysis of recurring token pairs in a pretrained two-layer attention-only transformer. Traces key and output contributions from actual cached activations, including positions and biases, without changing the run."

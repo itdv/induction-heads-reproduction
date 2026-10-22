@@ -1,4 +1,4 @@
-"""Find candidate heads, measure their attention, and test their OV/QK weights.
+"""Find candidate heads and trace information through an actual forward pass.
 
 Run from the repository root: python experiments/induction_pairs.py
 """
@@ -16,9 +16,8 @@ import torch
 from pair_config import ROOT, MODEL, REVISION, TOKENIZER, TOKENIZER_REVISION
 from pair_data import PairBatch, make_pair_batch
 from pair_measurements import AttentionScores, SelectedHeads, measure_attention, select_heads
-from pair_model import load_model, read_attention
-from paper_circuits import CircuitAnalysis, analyze_circuits
-from plot_circuits import save_circuit_plot
+from pair_model import load_model, read_attention, read_run
+from pair_trace import RunTrace, trace_run
 
 if TYPE_CHECKING:
     from transformer_lens import HookedTransformer
@@ -29,7 +28,7 @@ class ExperimentReport(TypedDict):
     query_count: int
     discovery_attention: list[AttentionScores]
     evaluation_attention: list[AttentionScores]
-    circuits: CircuitAnalysis
+    trace: RunTrace
 
 
 @dataclass(frozen=True)
@@ -41,7 +40,7 @@ class Settings:
     max_gap: int = 9
     seed: int = 20261021  # Evaluation uses seed + 1.
     threads: int = 2
-    output: str = "work/induction/mechanism-01"
+    output: str = "work/induction/trace-01"
 
 
 def parse_settings() -> Settings:
@@ -55,6 +54,8 @@ def parse_settings() -> Settings:
     settings = Settings(**vars(parser.parse_args()))
     if settings.threads < 1:
         parser.error("--threads must be positive")
+    if settings.pairs < 2:
+        parser.error("--pairs must be at least 2 for output tracing")
     return settings
 
 
@@ -76,19 +77,21 @@ def run_experiment(
     discovery_scores = measure_attention(read_attention(model, discovery), discovery)
     selected = select_heads(discovery_scores)
 
-    # 2. Measure attention on a separate set of random sequences.
+    # 2. Save the actual evaluation run and measure its attention.
     evaluation = build_data(model, settings, settings.seed + 1)
-    evaluation_scores = measure_attention(read_attention(model, evaluation), evaluation)
+    cache = read_run(model, evaluation)
+    patterns = [cache["pattern", layer] for layer in range(model.cfg.n_layers)]
+    evaluation_scores = measure_attention(patterns, evaluation)
 
-    # 3. Test OV and composed QK for every late head, using the selected early head.
-    circuits = analyze_circuits(model, selected["early_head"])
+    # 3. Follow key and output contributions in that same, unchanged run.
+    trace = trace_run(model, cache, evaluation, selected["early_head"], selected["late_head"])
 
     report: ExperimentReport = {
         "selected_heads": selected,
         "query_count": len(evaluation.last_occurrences()),
         "discovery_attention": discovery_scores,
         "evaluation_attention": evaluation_scores,
-        "circuits": circuits,
+        "trace": trace,
     }
     inputs = {"discovery": discovery.to_dict(), "evaluation": evaluation.to_dict()}
     return report, inputs
@@ -103,27 +106,55 @@ def write_summary(path: Path, report: ExperimentReport) -> None:
     early, late = selected["early_head"], selected["late_head"]
     attention = report["evaluation_attention"][1]
     lines = [
-        "# Mechanistic analysis",
+        "# Information flow in the actual run",
         "",
         f"Selected heads: L0H{early} and L1H{late}.",
         f"Evaluation queries: {report['query_count']}.",
         f"Matching-source attention: {attention['matching_source_mass'][late]:.4f}.",
         f"Top source match rate: {attention['top_source_match_rate'][late]:.4f}.",
         "",
-        "| Late head | OV score | QK score |",
-        "|---|---:|---:|",
+        "## Key contributions to raw attention scores",
+        "",
+        "Matching and other sources are earlier pair-B positions in the same inputs.",
+        "Values are means over query-source edges, before softmax.",
+        "",
+        "| Key component | Matching sources | Other pair sources | Difference |",
+        "|---|---:|---:|---:|",
     ]
-    for head in report["circuits"]["heads"]:
-        ov = head["ov_copying"]["positivity"]
-        qk = head["qk_same_matching"]["positivity"]
-        ov_text = "undefined" if ov is None else f"{ov:.4f}"
-        qk_text = "undefined" if qk is None else f"{qk:.4f}"
-        lines.append(f"| L1H{head['head']} | {ov_text} | {qk_text} |")
+    keys = report["trace"]["keys"]
+    score_rows = {"Total cached score": keys["total_score"], **keys["key_parts"]}
+    score_rows["Preceding-token read within selected early head"] = keys["preceding_token_key_score"]
+    for name, scores in score_rows.items():
+        other = scores["other_pairs"]
+        difference = scores["difference"]
+        other_text = "n/a" if other is None else f"{other:.4f}"
+        difference_text = "n/a" if difference is None else f"{difference:.4f}"
+        lines.append(f"| {name} | {scores['matching']:.4f} | {other_text} | {difference_text} |")
+    output = report["trace"]["output"]
     lines.extend([
         "",
-        "Scores describe weights, not prediction accuracy.",
-        "The maps omit biases, positions and other paths in the model.",
-        "High scores support the proposed circuit; they do not prove it on every input.",
+        "The preceding-token row is part of the early-head row; do not add it again.",
+        "",
+        "## Output contributions",
+        "",
+        "A margin is the target logit minus the mean logit of the other pair values.",
+        "These are direct contributions from the selected late head, not prediction accuracy.",
+        "",
+        f"Selected head margin: {output['head_margin']:.4f}.",
+        f"From matching sources: {output['matching_sources_margin']:.4f}.",
+        f"From all other sources: {output['other_sources_margin']:.4f}.",
+        "",
+        "| Value component within matching sources | Margin contribution |",
+        "|---|---:|",
+    ])
+    for name, margin in output["matching_value_parts"].items():
+        lines.append(f"| {name} | {margin:.4f} |")
+    errors = [keys["key_reconstruction_error"], keys["score_reconstruction_error"],
+              output["value_reconstruction_error"], output["head_reconstruction_error"]]
+    lines.extend([
+        "",
+        f"Largest reconstruction error: {max(errors):.8f}.",
+        "No activations were changed. Contributions are not intervention effects.",
     ])
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -136,19 +167,18 @@ def main() -> None:
 
     print("Loading the model.", flush=True)
     model = load_model()
-    print("Measuring attention and testing OV/QK weights.", flush=True)
+    print("Measuring attention and tracing the cached run.", flush=True)
     report, inputs = run_experiment(model, settings)
 
     save_json(output / "protocol.json", {
         "model": MODEL, "model_revision": REVISION,
         "tokenizer": TOKENIZER, "tokenizer_revision": TOKENIZER_REVISION,
         "settings": asdict(settings), "training": False,
+        "analysis": "Additive key and output contributions in the actual cached run",
     })
     save_json(output / "inputs.json", inputs)
     save_json(output / "results.json", report)
     write_summary(output / "summary.md", report)
-    save_circuit_plot(report["circuits"], report["selected_heads"]["late_head"],
-                      output / "circuits.png")
     print((output / "summary.md").read_text(encoding="utf-8"), flush=True)
     print(f"Saved results to {output}", flush=True)
 

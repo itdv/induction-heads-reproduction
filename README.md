@@ -1,79 +1,88 @@
-# Induction heads: a small mechanistic analysis
+# Induction heads: information flow in an actual run
 
-This project follows two weight tests from [Elhage et al. (2021)](https://transformer-circuits.pub/2021/framework/index.html): **OV copying** and **QK matching through an earlier head**.
+This is a small CPU experiment with a pretrained two-layer attention-only model.
+There is no training. The analysis reads cached activations from an unchanged
+forward pass. It does not use eigenvalue scores, token-map tests, input controls
+or head ablations.
 
-It uses a pretrained two-layer attention-only model. There is no training.
+## Read the code
 
-## What the script does
+1. [induction_pairs.py](experiments/induction_pairs.py): start with `run_experiment()`.
+   It selects heads, runs evaluation, and traces that evaluation run.
+2. [pair_data.py](experiments/pair_data.py): build random pairs and record earlier sources.
+3. [pair_measurements.py](experiments/pair_measurements.py): measure attention and select heads.
+4. [pair_trace.py](experiments/pair_trace.py): read `trace_keys()` and `trace_output()`.
+5. [pair_model.py](experiments/pair_model.py): load the model; `read_run()` saves the needed activations.
 
-1. Build random sequences with four recurring token pairs.
-2. Find an early head that reads the previous token, and a late head that reads earlier matching B positions.
-3. Measure attention on a separate set of sequences.
-4. Test the OV and composed QK weights of all eight late heads.
-5. Save a short table, a plot and the exact inputs.
-
-There are no input controls, prediction scores, head ablations or detailed activation decompositions in the current code.
-
-## Read the code in this order
-
-| File | What to read |
-|---|---|
-| [induction_pairs.py](experiments/induction_pairs.py) | Start with `run_experiment()`. Its three steps show the whole analysis. `main()` loads the model and saves the output. |
-| [pair_data.py](experiments/pair_data.py) | Build the sequences. Each occurrence records the earlier matching B positions. |
-| [pair_measurements.py](experiments/pair_measurements.py) | Measure attention to the previous token and to matching sources; choose heads. |
-| [paper_circuits.py](experiments/paper_circuits.py) | Build the two weight maps and compute their eigenvalue scores. |
-| [pair_model.py](experiments/pair_model.py) | Load local weights and read only attention patterns from the cache. |
-| [plot_circuits.py](experiments/plot_circuits.py) | Draw the scores. This file does not do the analysis. |
-| [pair_config.py](experiments/pair_config.py) | Model names, pinned revisions and cache paths. |
-
-Names, comments and output are in plain English.
-
-Functions have input and return types. Result dictionaries use `TypedDict`, so
-the editor can show their keys and follow the types between functions.
+Functions have type hints. Results use `TypedDict` so the editor can show their keys.
+Names, comments and output use plain English.
 
 ## Inputs
 
-Each sequence contains four distinct pairs, such as `A -> B` and `C -> D`. Each pair occurs four times. Every round has a new pair order. Each pair has 1–9 random background tokens before it.
+Each sequence has four different A-to-B pairs. Each pair occurs four times.
+Every round has a new pair order. Each pair has 1–9 random background tokens
+before it. The background excludes pair tokens. These are token IDs, not stories.
 
-The letters stand for randomly sampled token IDs, not words in a story. Background excludes the pair tokens. The full sequence is never duplicated.
+There are 32 discovery sequences and 32 separate evaluation sequences.
+Discovery selects an early head by attention to the previous token, and a late
+head by attention to earlier matching B positions. Evaluation uses the last
+appearance of every pair: 128 queries, each with three matching sources.
 
-The analysis uses the fourth occurrence of every pair. Each A then has three earlier matching B sources. There are 32 discovery sequences and 32 separate evaluation sequences, with 128 evaluation queries. The model's own causal attention mask prevents reading future tokens.
+The inputs and seeds are unchanged from the preceding mechanism reference.
+The model's own causal attention mask handles future positions.
 
-## The two weight maps
+## What is traced?
 
-The code uses row vectors. Let `E` be the token embedding, `U` the unembedding, `p` the early head and `h` a late head. Take each weight from its head's layer.
+### Information entering the key
+
+For each final A, inspect the earlier pair-B positions in that same sequence.
+Read the actual late-head Q, K and attention score from the cache.
+
+Split K into the contributions from token embedding, position, the eight early
+heads and biases. Keep the actual Q fixed:
 
 ```python
-# A source token changes output token scores through OV.
-M_OV = E @ W_V[h] @ W_O[h] @ U
-
-# The current token supplies Q; the early head supplies information for K.
-Q = E @ W_Q[h]
-K = E @ W_V[p] @ W_O[p] @ W_K[h]
-M_QK = Q @ K.T / attention_scale
+key_part = early_head_write @ W_K_late
+score_part = (actual_query * key_part).sum() / attention_scale
 ```
 
-The early head moves information about A into the following B position. The composed QK map tests whether a new A matches that information. OV tests whether the late head can copy the B it reads.
+The early-head write comes from its cached Z and output weight, so it already
+includes what the head read in that context.
 
-For each map, the score is:
+Also follow the selected early head's actual read from the token immediately
+before each B. This is part of that head's contribution, not an extra term.
 
-```text
-real(sum(eigenvalues)) / sum(abs(eigenvalues))
-```
+Report means for matching pair sources and other pair sources in the same
+unchanged input. This is not a modified-input control.
 
-A score near +1 supports copying or same-token matching. It is not prediction accuracy or the fraction of positive eigenvalues. These maps omit biases, positions and other paths in the model. They support a circuit interpretation, but do not prove the full computation.
+### Information entering the output
 
-The maps are stored as two factors, `left` and `right`. Their nonzero eigenvalues equal those of `right @ left`, which is only 64 by 64. The full vocabulary-sized maps are never built.
+Reconstruct the selected late head's output from its actual attention and V.
+Split its write into matching B sources and all other sources.
+
+Within matching sources, split V into the token embedding, early-head writes and
+biases. Shortformer positions are not added to V.
+
+Project each write through the unembedding. Report its contribution to the target
+logit minus the mean logit of the other three pair values. This measures direct
+support for the target; it is not prediction accuracy or a candidate-answer task.
+
+The code checks that the pieces sum back to the cached K, attention scores, Z
+and matching-source write. No activation is removed or changed. These are additive
+contributions in the observed run, not intervention effects or a full proof of causality.
+
+This decomposition needs two attention-only layers, no normalization, and
+Shortformer positions. It is not a general decomposition for arbitrary models.
 
 ## Run
 
-Use Python 3.11. Run from the repository root:
+Use Python 3.11 and run from the repository root:
 
 ```bash
 python -m venv .venv
 ```
 
-Activate it in PowerShell:
+Activate in PowerShell:
 
 ```powershell
 .venv\Scripts\Activate.ps1
@@ -85,7 +94,7 @@ Or on Linux/macOS:
 source .venv/bin/activate
 ```
 
-Then run:
+Then:
 
 ```bash
 python -m pip install -r requirements.txt
@@ -93,37 +102,42 @@ python experiments/download_model.py
 python experiments/induction_pairs.py
 ```
 
-The download step needs internet. The analysis loads cached files and uses CPU with two threads.
+Only the download needs internet. The analysis uses local files, CPU and two threads.
 
-The default output is `work/induction/mechanism-01`. Existing output folders are not overwritten. To use a new folder:
+Default output: `work/induction/trace-01`. Existing output folders are not overwritten:
 
 ```bash
-python experiments/induction_pairs.py --output work/induction/mechanism-02
+python experiments/induction_pairs.py --output work/induction/trace-02
 ```
 
-Use `--help` for the data settings. `INDUCTION_HF_HOME` can point to an existing Hugging Face cache.
+Use `--help` for the settings. `--pairs` must be at least 2 for the output comparison.
+`INDUCTION_HF_HOME` can point to an existing Hugging Face cache.
 
 ## Output
 
-- `summary.md`: selected heads, attention scores and the OV/QK table.
-- `circuits.png`: OV score versus QK score for each late head.
-- `results.json`: all attention scores, map scores and eigenvalues.
-- `inputs.json`: exact token IDs, pair mappings and source positions.
+- `summary.md`: attention and readable key/output contribution tables.
+- `results.json`: all scores, per-edge key records and reconstruction errors.
+- `inputs.json`: exact discovery and evaluation inputs.
 - `protocol.json`: settings and pinned model/tokenizer revisions.
 
-The current reference is [results/mechanism-reference](results/mechanism-reference). See [RESULTS.md](RESULTS.md). The older `results/reference` and `results/paper-reference` folders record earlier versions; their extra analyses are no longer run.
+Current results: [results/run-reference](results/run-reference). See [RESULTS.md](RESULTS.md).
+Other result folders record earlier versions and are not the current analysis.
+There is no eigenvalue analysis in the active code.
 
-Removing tokens reserved for old controls changed the generated sequences, even with the same seeds. The new reference records the new inputs. The model and weight tests are unchanged.
+## Model and source
 
-## Model
-
-[NeelNanda/Attn-Only-2L512W-Shortformer-6B-big-lr](https://huggingface.co/NeelNanda/Attn-Only-2L512W-Shortformer-6B-big-lr): two layers, eight heads per layer, width 512, head width 64, Shortformer positions, no MLP or normalization.
+[NeelNanda/Attn-Only-2L512W-Shortformer-6B-big-lr](https://huggingface.co/NeelNanda/Attn-Only-2L512W-Shortformer-6B-big-lr):
+two layers, eight heads per layer, width 512, head width 64.
 
 Model revision: `438f8e124b85bde1b6e64c63e9445e31b45f5be6`.
 
-Tokenizer: `EleutherAI/gpt-neox-20b`, revision `c292233c833e336628618a88a648727eb3dff0a7`. Only tokenizer files are downloaded from that repository, not its model weights.
+Tokenizer: `EleutherAI/gpt-neox-20b`, revision
+`c292233c833e336628618a88a648727eb3dff0a7`. Only tokenizer files are downloaded
+from that repository, not its model weights.
 
-The pair inputs are our variant. The paper also shows a complete random sequence repeated three times. We use a different public model, not Anthropic's original weights.
+The circuit idea follows [Elhage et al. (2021)](https://transformer-circuits.pub/2021/framework/index.html).
+The pair inputs and this activation report are our implementation in a different
+public model. This does not reproduce the original weights or every paper experiment.
 
 ## Tests
 
@@ -131,4 +145,7 @@ The pair inputs are our variant. The paper also shows a complete random sequence
 python -m pytest -q
 ```
 
-Eight tests check source positions, attention indexing, head selection, cache reading, the small-matrix eigenvalue calculation and the direction of the two maps. They use small local examples, with no downloaded model.
+Six tests cover data, source indexing, head selection, cache reading, and real
+forward-pass decompositions with nonzero biases. They also check that tracing
+leaves the cache, input tokens and model weights unchanged. No pretrained model
+download is needed for tests.
