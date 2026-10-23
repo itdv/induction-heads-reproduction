@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, TypedDict
 
 import torch
 
-from pair_data import PairBatch
+from pair_data import PairBatch, PairOccurrence
 
 if TYPE_CHECKING:
     from transformer_lens import ActivationCache, HookedTransformer
@@ -42,9 +42,13 @@ class PredictionScores(TypedDict):
 @torch.no_grad()
 def measure_predictions(
     model: HookedTransformer, cache: ActivationCache, data: PairBatch,
+    events: list[PairOccurrence] | None = None,
 ) -> PredictionScores:
-    """Check B against the full vocabulary, using the same cached run."""
-    events = data.last_occurrences()
+    """Check B against the full vocabulary, using the same cached run.
+
+    By default the final occurrence of each pair is checked.
+    """
+    events = data.last_occurrences() if events is None else events
     rows = torch.tensor([event.sequence_index for event in events])
     positions = torch.tensor([event.trigger_position for event in events])
     targets = torch.tensor([event.target_token for event in events])

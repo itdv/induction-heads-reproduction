@@ -1,0 +1,30 @@
+{
+  "seed": 20261022,
+  "vocabulary": 50277,
+  "occurrences": [
+    {
+      "occurrence": 1,
+      "correct": 0,
+      "total": 128,
+      "mean_target_probability": 5.171887096366845e-06
+    },
+    {
+      "occurrence": 2,
+      "correct": 14,
+      "total": 128,
+      "mean_target_probability": 0.045198600739240646
+    },
+    {
+      "occurrence": 3,
+      "correct": 25,
+      "total": 128,
+      "mean_target_probability": 0.0770636573433876
+    },
+    {
+      "occurrence": 4,
+      "correct": 27,
+      "total": 128,
+      "mean_target_probability": 0.09121856093406677
+    }
+  ]
+}

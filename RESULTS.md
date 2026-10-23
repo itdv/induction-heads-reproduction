@@ -14,6 +14,18 @@ B probabilities are saved in results.json.
 This is partial success. A positive contribution to B's logit does not guarantee
 that B wins against the full vocabulary.
 
+For reference, the same check at every occurrence of each pair, on the same inputs
+([results/occurrence-baseline-reference](results/occurrence-baseline-reference/results.json)):
+
+| Occurrence of the pair | B is the top prediction | Mean probability of B |
+|---|---:|---:|
+| 1st (nothing earlier to copy) | 0/128 | 0.0005% |
+| 2nd | 14/128 (10.9%) | 4.52% |
+| 3rd | 25/128 (19.5%) | 7.71% |
+| 4th (the traced queries) | 27/128 (21.1%) | 9.12% |
+
+A uniform guess over the 50,277-token vocabulary gives each token about 0.002%.
+
 ## Attention and keys
 
 Selected heads: L0H3 and L1H5. Matching-source attention is 60.27%.

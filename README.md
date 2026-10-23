@@ -129,6 +129,15 @@ python experiments/induction_pairs.py --output work/induction/trace-02
 Use `--help` for the settings.
 `INDUCTION_HF_HOME` can point to an existing Hugging Face cache.
 
+To check B's prediction at each of the four occurrences of a pair, on the same inputs:
+
+```bash
+python experiments/occurrence_baseline.py
+```
+
+At the first occurrence the pair has not appeared yet, so there is nothing to copy.
+This is the reference for the final occurrence. Output: `work/induction/occurrence-baseline-01`.
+
 ## Output
 
 - `summary.md`: attention and readable key/output contribution tables.
